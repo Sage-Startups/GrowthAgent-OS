@@ -2,50 +2,43 @@
 
 > AI agents that turn enquiries into qualified sales opportunities.
 
-GrowthAgent OS is a premium AI operations platform for digital businesses. Each customer gets a private lead CRM, AI lead-to-sale agent, approval queue, agent chat, and reports — all from one dashboard.
-
----
+GrowthAgent OS is a premium AI operations platform for digital businesses. It gives each customer a private lead CRM, AI lead-to-sale agent, approval queue, agent chat, and reports — all from one dashboard.
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 14 App Router |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS + shadcn/ui |
-| Database | PostgreSQL + Prisma ORM |
-| Auth | Auth.js v4 (email/password) |
-| Validation | Zod + React Hook Form |
-| Billing | Stripe-ready architecture |
-| Icons | Lucide React |
-
----
+- **Next.js 14** App Router
+- **TypeScript**
+- **Tailwind CSS** + shadcn/ui
+- **Prisma ORM** + PostgreSQL
+- **Auth.js v4** (email/password)
+- **Stripe-ready** subscription architecture
+- **Zod** validation + React Hook Form
 
 ## Quick Start
 
 ### 1. Clone and install
 
 ```bash
-git clone <repo-url>
+git clone <repo>
 cd growth-agent-os
 npm install
 ```
 
-### 2. Configure environment variables
+### 2. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your values:
+Edit `.env`:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/growthagent_os"
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-here-min-32-chars"
+NEXTAUTH_SECRET="your-secret-min-32-chars"
 ```
 
-Generate a secure secret:
+Generate a secret:
 ```bash
 openssl rand -base64 32
 ```
@@ -53,13 +46,13 @@ openssl rand -base64 32
 ### 3. Set up the database
 
 ```bash
-# Run migrations (creates all tables)
+# Create tables
 npx prisma migrate dev --name init
 
 # Generate Prisma client
 npx prisma generate
 
-# Seed with demo data + test accounts
+# Seed with demo data
 npm run db:seed
 ```
 
@@ -71,152 +64,102 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
----
-
 ## Demo Accounts
 
-After running `npm run db:seed`:
+After seeding:
 
-| Role  | Email                  | Password     |
-|-------|------------------------|--------------|
-| Admin | admin@growthagent.os   | admin123456  |
-| User  | demo@example.com       | demo123456   |
-
-The demo account has a pre-configured company (Acme Digital Agency) with 6 seeded leads, 3 pending approvals, and 5 agent run logs.
-
----
+| Role  | Email                    | Password      |
+|-------|--------------------------|---------------|
+| Admin | admin@growthagent.os     | admin123456   |
+| User  | demo@example.com         | demo123456    |
 
 ## Routes
 
 ### Public
+| Route      | Description          |
+|------------|----------------------|
+| `/`        | Homepage             |
+| `/pricing` | Pricing page         |
+| `/demo`    | Demo request form    |
+| `/login`   | Sign in              |
+| `/signup`  | Create account       |
 
-| Route      | Description               |
-|------------|---------------------------|
-| `/`        | Premium homepage          |
-| `/pricing` | Pricing page (3 tiers)    |
-| `/demo`    | Demo request form         |
-| `/login`   | Sign in                   |
-| `/signup`  | Create account            |
+### App (authenticated)
+| Route                | Description          |
+|----------------------|----------------------|
+| `/app`               | Main dashboard       |
+| `/app/leads`         | CRM lead list        |
+| `/app/leads/[id]`    | Lead detail          |
+| `/app/agent`         | Agent chat           |
+| `/app/approvals`     | Approval queue       |
+| `/app/reports`       | Reports              |
+| `/app/settings`      | Settings             |
+| `/app/onboarding`    | Post-signup setup    |
 
-### App (requires authentication)
-
-| Route              | Description                          |
-|--------------------|--------------------------------------|
-| `/app`             | Main dashboard                       |
-| `/app/leads`       | CRM lead list with scoring           |
-| `/app/leads/[id]`  | Lead detail: research, draft, action |
-| `/app/agent`       | Agent chat interface                 |
-| `/app/approvals`   | Approval queue                       |
-| `/app/reports`     | Pipeline reports                     |
-| `/app/settings`    | Company, agent, integrations         |
-| `/app/onboarding`  | Post-signup setup wizard             |
-
-### Admin (requires `ADMIN` role)
-
-| Route                | Description              |
-|----------------------|--------------------------|
-| `/admin`             | Platform overview        |
-| `/admin/customers`   | Customer list + MRR      |
-| `/admin/leads`       | All leads across accounts|
-| `/admin/agent-runs`  | Agent execution logs     |
-
----
+### Admin (ADMIN role only)
+| Route                  | Description         |
+|------------------------|---------------------|
+| `/admin`               | Admin overview      |
+| `/admin/customers`     | Customer list       |
+| `/admin/leads`         | All leads           |
+| `/admin/agent-runs`    | Agent run logs      |
 
 ## Environment Variables
 
-| Variable                 | Required | Description                       |
-|--------------------------|----------|-----------------------------------|
-| `DATABASE_URL`           | ✅ Yes   | PostgreSQL connection string      |
-| `NEXTAUTH_URL`           | ✅ Yes   | App base URL                      |
-| `NEXTAUTH_SECRET`        | ✅ Yes   | Auth signing secret (32+ chars)   |
-| `STRIPE_SECRET_KEY`      | No       | Stripe secret key (billing)       |
-| `STRIPE_PUBLISHABLE_KEY` | No       | Stripe publishable key            |
-| `STRIPE_WEBHOOK_SECRET`  | No       | Stripe webhook signing secret     |
-| `NEXT_PUBLIC_APP_URL`    | No       | Public app URL                    |
+See `.env.example` for all required variables.
 
----
+| Variable               | Required | Description                    |
+|------------------------|----------|--------------------------------|
+| `DATABASE_URL`         | Yes      | PostgreSQL connection string   |
+| `NEXTAUTH_URL`         | Yes      | App URL                        |
+| `NEXTAUTH_SECRET`      | Yes      | Auth signing secret (32+ chars)|
+| `STRIPE_SECRET_KEY`    | No       | Stripe secret key              |
+| `STRIPE_PUBLISHABLE_KEY` | No     | Stripe publishable key         |
+| `STRIPE_WEBHOOK_SECRET`  | No     | Stripe webhook signing secret  |
 
-## Database Commands
+## Database Migrations
 
 ```bash
-npm run db:migrate   # Run migrations in dev
-npm run db:push      # Push schema (no migration file)
-npm run db:seed      # Seed demo data
-npm run db:studio    # Open Prisma Studio (visual DB browser)
-npm run db:generate  # Regenerate Prisma client
-```
+# Run migrations in development
+npx prisma migrate dev
 
----
+# Deploy migrations in production
+npx prisma migrate deploy
+
+# Open Prisma Studio
+npm run db:studio
+```
 
 ## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── (auth)/            # Login + signup pages
-│   ├── (public)/          # Marketing pages (homepage, pricing, demo)
+│   ├── (public)/          # Public marketing pages
+│   ├── (auth)/            # Login/signup pages
 │   ├── app/               # Authenticated app pages
-│   │   ├── page.tsx       # Dashboard
-│   │   ├── leads/         # CRM leads list + detail
-│   │   ├── agent/         # Agent chat
-│   │   ├── approvals/     # Approval queue
-│   │   ├── reports/       # Reports
-│   │   ├── settings/      # Settings (6 tabs)
-│   │   └── onboarding/    # Post-signup wizard
-│   ├── admin/             # Admin-only area
-│   ├── api/               # API routes (auth, signup)
-│   └── actions/           # Server actions (auth, approvals)
+│   ├── admin/             # Admin-only pages
+│   ├── api/               # API routes
+│   └── actions/           # Server actions
 ├── components/
-│   ├── ui/                # shadcn/ui component library
-│   └── layout/            # Navbar, footer, sidebar, providers
+│   ├── ui/                # shadcn/ui components
+│   └── layout/            # Shared layout components
 ├── lib/
-│   ├── auth.ts            # NextAuth options + CredentialsProvider
-│   ├── db.ts              # Prisma client singleton
-│   ├── utils.ts           # cn(), formatCurrency, formatDate, colour helpers
+│   ├── auth.ts            # NextAuth config
+│   ├── db.ts              # Prisma client
+│   ├── utils.ts           # Utility functions
 │   └── validations.ts     # Zod schemas
 └── types/
-    └── next-auth.d.ts     # Session/JWT type augmentation
-prisma/
-├── schema.prisma          # 18 models, 8 enums
-└── seed.ts                # Demo data seed script
+    └── next-auth.d.ts     # Type augmentations
 ```
 
----
+## What's Next (Phase 2)
 
-## Pricing Structure
-
-| Plan                | Setup Fee    | Monthly     |
-|---------------------|--------------|-------------|
-| Lead Agent Starter  | £499         | £99/month   |
-| Pipeline Agent      | £1,500       | £249/month  |
-| Growth Agent OS     | from £3,000  | from £599/month |
-
----
-
-## Database Schema
-
-18 Prisma models across 8 categories:
-
-- **Auth**: `User`, `Account`, `Session`, `VerificationToken`
-- **Business**: `Company`, `CompanyMember`, `Plan`, `Subscription`
-- **CRM**: `Lead`, `LeadNote`, `LeadScore`
-- **Agents**: `Agent`, `AgentMessage`, `AgentTask`, `AgentRun`
-- **Workflow**: `ApprovalRequest`, `Integration`, `Report`
-- **System**: `AuditLog`, `VoiceCall`, `WebhookEvent`
-
----
-
-## Phase 2 Roadmap
-
-These features are architecturally ready but not yet wired to live data:
-
-- [ ] Live database queries replacing mock data on all pages
-- [ ] OpenClaw agent engine integration
-- [ ] Stripe checkout + subscription management
-- [ ] AI lead research (OpenAI / Perplexity API)
-- [ ] Gmail integration for email enquiry capture
-- [ ] HubSpot / Pipedrive two-way sync
-- [ ] Vapi voice agent for inbound calls
-- [ ] Real-time notifications (Pusher or SSE)
-- [ ] Email delivery via Resend
-- [ ] Webhook receiver for external lead sources
+- [ ] Wire real leads from database (currently uses mock data)
+- [ ] Connect OpenClaw agent engine
+- [ ] Stripe checkout integration
+- [ ] Real AI lead research (Perplexity / OpenAI)
+- [ ] Gmail / HubSpot integrations
+- [ ] Vapi voice agent
+- [ ] Real-time notifications (Pusher / SSE)
+- [ ] Email delivery (Resend)
