@@ -1,62 +1,81 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Bot, Send, User, Sparkles, Zap } from "lucide-react"
+import { sendAgentMessage, getAgentMessages } from "@/app/actions/agent-chat"
 
 type Message = {
   role: "user" | "assistant"
   content: string
-  timestamp: Date
+  createdAt: Date
 }
 
-const initialMessages: Message[] = [
-  {
-    role: "assistant",
-    content: "Hello! I am your GrowthAgent. I have been monitoring your pipeline and I am ready to help.\n\nYou currently have **8 HOT leads** and **3 approvals** waiting for your review. The top priority today is Sarah Chen from Fintech Agency — her draft reply is ready and she showed strong buying intent.\n\nWhat would you like to work on?",
-    timestamp: new Date(Date.now() - 60000),
-  },
-]
+const WELCOME = "Hello! I'm your GrowthAgent. I'm connected to your live pipeline and ready to help.\n\nTry asking me: \"Show me my hot leads\", \"Who needs a follow-up today?\", or \"What is the pipeline value?\""
 
 const suggestions = [
   "Show me my hottest leads",
   "Who needs a follow-up today?",
-  "Draft a follow-up for Marcus Webb",
-  "What is the pipeline value this week?",
+  "What is the pipeline value?",
+  "Summarise this week",
+  "Which lead is the best priority?",
 ]
 
 export default function AgentPage() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
 
-  const sendMessage = async (text: string) => {
-    if (!text.trim()) return
-    const userMsg: Message = { role: "user", content: text, timestamp: new Date() }
+  useEffect(() => {
+    getAgentMessages().then((res) => {
+      const msgs = res && "messages" in res ? res.messages : undefined
+      if (msgs && msgs.length > 0) {
+        setMessages(msgs.map((m: any) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+          createdAt: new Date(m.createdAt),
+        })))
+      }
+      setLoaded(true)
+    })
+  }, [])
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, isTyping])
+
+  const sendMsg = async (text: string) => {
+    if (!text.trim() || isTyping) return
+    const userMsg: Message = { role: "user", content: text, createdAt: new Date() }
     setMessages((prev) => [...prev, userMsg])
     setInput("")
     setIsTyping(true)
 
-    await new Promise((r) => setTimeout(r, 1200))
-
-    const responses: Record<string, string> = {
-      default: "I understand. Let me look into that for you. Based on your current pipeline data, I can see several opportunities worth discussing. Would you like me to generate a detailed analysis or take a specific action?",
-      "show me my hottest leads": "Your 3 hottest leads right now are:\n\n1. **Sarah Chen** (Fintech Agency) — Score 87/100, Est. £12k. Draft reply ready.\n2. **Priya Sharma** (SaaS Launch HQ) — Score 91/100, Est. £18k. Research complete.\n3. **David Kim** (Consulting DG) — Score 82/100, Est. £15k. Call booked.\n\nAll three have shown strong buying intent. I recommend approving the draft replies today.",
-      "who needs a follow-up today?": "Three leads are due for follow-up today:\n\n1. **Marcus Webb** — Last contact 4 days ago. Warm lead, hasn't replied to initial outreach.\n2. **Tom Rigby** — Follow-up was scheduled for today. He requested more info on pricing.\n3. **Emma Foster** — Called last Tuesday, said she would decide this week.\n\nWould you like me to draft follow-up messages for any of these?",
-      "draft a follow-up for marcus webb": "Here is a draft follow-up for Marcus Webb at BuilderBrand Co:\n\n---\nHi Marcus,\n\nJust circling back on my previous message — I know things get busy!\n\nI wanted to share a quick example of how we helped a similar branding agency reduce their lead response time from 2 days to under 2 hours using GrowthAgent OS.\n\nWould a 15-minute call this week be useful to explore if it could work for BuilderBrand Co?\n\nBest,\n[Your name]\n---\n\nShall I add this to your approval queue?",
-      "what is the pipeline value this week?": "Here is your pipeline summary for this week:\n\n- **Total pipeline value:** £84,500\n- **Hot leads (8):** £65,000 combined est. value\n- **Warm leads (14):** £19,500 combined est. value\n- **New leads added:** 6\n- **Change vs last week:** +£12,000 (+16%)\n\nYour strongest opportunity is Priya Sharma at SaaS Launch HQ — estimated at £18k and she came in via referral.",
-    }
-
-    const key = text.toLowerCase()
-    const response = responses[key] || responses.default
-
-    setMessages((prev) => [...prev, { role: "assistant", content: response, timestamp: new Date() }])
+    const result = await sendAgentMessage(text)
     setIsTyping(false)
+
+    if (result && "message" in result && result.message) {
+      setMessages((prev) => [...prev, {
+        role: "assistant",
+        content: result.message.content,
+        createdAt: new Date(result.message.createdAt),
+      }])
+    } else if (result && "error" in result) {
+      setMessages((prev) => [...prev, {
+        role: "assistant",
+        content: `Sorry, something went wrong: ${result.error}`,
+        createdAt: new Date(),
+      }])
+    }
   }
+
+  const displayMessages = messages.length > 0 ? messages : (loaded ? [{ role: "assistant" as const, content: WELCOME, createdAt: new Date() }] : [])
 
   return (
     <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">
@@ -72,7 +91,6 @@ export default function AgentPage() {
       </div>
 
       <div className="grid lg:grid-cols-4 gap-6 flex-1 min-h-0">
-        {/* Chat */}
         <Card className="border-slate-800 lg:col-span-3 flex flex-col min-h-0">
           <CardHeader className="pb-3 border-b border-slate-800 shrink-0">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -86,7 +104,7 @@ export default function AgentPage() {
 
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
-              {messages.map((msg, i) => (
+              {displayMessages.map((msg, i) => (
                 <div key={i} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : ""}`}>
                   {msg.role === "assistant" && (
                     <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shrink-0 mt-0.5">
@@ -94,9 +112,7 @@ export default function AgentPage() {
                     </div>
                   )}
                   <div className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                    msg.role === "user"
-                      ? "bg-blue-600 text-white ml-auto"
-                      : "bg-slate-800 text-slate-200"
+                    msg.role === "user" ? "bg-blue-600 text-white ml-auto" : "bg-slate-800 text-slate-200"
                   }`}>
                     {msg.content}
                   </div>
@@ -119,6 +135,7 @@ export default function AgentPage() {
                   </div>
                 </div>
               )}
+              <div ref={bottomRef} />
             </div>
           </ScrollArea>
 
@@ -127,18 +144,17 @@ export default function AgentPage() {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage(input)}
+                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMsg(input)}
                 placeholder="Ask about your pipeline, request actions, or get lead insights..."
                 className="flex-1"
               />
-              <Button variant="gradient" size="icon" onClick={() => sendMessage(input)} disabled={isTyping || !input.trim()}>
+              <Button variant="gradient" size="icon" onClick={() => sendMsg(input)} disabled={isTyping || !input.trim()}>
                 <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </Card>
 
-        {/* Suggestions */}
         <div className="space-y-4">
           <Card className="border-slate-800">
             <CardHeader className="pb-3">
@@ -150,8 +166,9 @@ export default function AgentPage() {
               {suggestions.map((s) => (
                 <button
                   key={s}
-                  onClick={() => sendMessage(s)}
-                  className="w-full text-left rounded-lg border border-slate-700/50 bg-slate-800/40 px-3 py-2 text-xs text-slate-300 hover:border-blue-500/40 hover:bg-slate-800/70 hover:text-white transition-all"
+                  onClick={() => sendMsg(s)}
+                  disabled={isTyping}
+                  className="w-full text-left rounded-lg border border-slate-700/50 bg-slate-800/40 px-3 py-2 text-xs text-slate-300 hover:border-blue-500/40 hover:bg-slate-800/70 hover:text-white transition-all disabled:opacity-50"
                 >
                   {s}
                 </button>
@@ -169,7 +186,7 @@ export default function AgentPage() {
               {[
                 { label: "Lead Research", status: "Active", color: "text-emerald-400" },
                 { label: "Lead Scoring", status: "Active", color: "text-emerald-400" },
-                { label: "Draft Replies", status: "3 queued", color: "text-yellow-400" },
+                { label: "Reply Generation", status: "Active", color: "text-emerald-400" },
                 { label: "Follow-Up Agent", status: "Monitoring", color: "text-blue-400" },
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
