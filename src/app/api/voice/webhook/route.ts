@@ -4,8 +4,7 @@ import { env } from "@/lib/env"
 import { z } from "zod"
 
 const webhookSchema = z.object({
-  companyApiKey: z.string().optional(),
-  companyId: z.string().optional(),
+  companyApiKey: z.string(),
   direction: z.enum(["INBOUND", "OUTBOUND", "BROWSER"]).default("INBOUND"),
   phoneNumber: z.string().optional(),
   transcript: z.string().optional(),
@@ -16,12 +15,14 @@ const webhookSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  // Validate webhook secret if configured
-  if (env.VOICE_WEBHOOK_SECRET) {
-    const signature = req.headers.get("x-webhook-secret")
-    if (signature !== env.VOICE_WEBHOOK_SECRET) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+  // Reject all requests if VOICE_WEBHOOK_SECRET is not configured — prevents open relay
+  if (!env.VOICE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: "Voice webhook not configured" }, { status: 503 })
+  }
+
+  const signature = req.headers.get("x-webhook-secret")
+  if (signature !== env.VOICE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   let body: unknown
@@ -31,15 +32,14 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
 
   const data = parsed.data
-  let companyId = data.companyId
 
-  if (!companyId && data.companyApiKey) {
-    const company = await prisma.company.findUnique({ where: { apiKey: data.companyApiKey }, select: { id: true } })
-    if (!company) return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
-    companyId = company.id
-  }
+  // Resolve companyId from companyApiKey only — never accept bare companyId from external callers
+  if (!data.companyApiKey) return NextResponse.json({ error: "companyApiKey required" }, { status: 400 })
 
-  if (!companyId) return NextResponse.json({ error: "companyId or companyApiKey required" }, { status: 400 })
+  const company = await prisma.company.findUnique({ where: { apiKey: data.companyApiKey }, select: { id: true } })
+  if (!company) return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
+
+  const companyId = company.id
 
   const voiceCall = await prisma.voiceCall.create({
     data: {

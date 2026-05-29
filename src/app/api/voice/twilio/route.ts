@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 
 export async function POST(req: NextRequest) {
+  // TODO: Validate X-Twilio-Signature using twilio.validateRequest() before processing
+  // See: https://www.twilio.com/docs/usage/webhooks/webhooks-security
   // Twilio sends form-encoded data
   let body: Record<string, string> = {}
   try {

@@ -21,7 +21,7 @@ export const env = {
   TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID ?? "",
   TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN ?? "",
   TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER ?? "",
-  VOICE_WEBHOOK_SECRET: process.env.VOICE_WEBHOOK_SECRET ?? "",
+  VOICE_WEBHOOK_SECRET: process.env.VOICE_WEBHOOK_SECRET ?? undefined,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ?? "",
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ?? "",
 }
