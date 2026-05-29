@@ -12,6 +12,12 @@ enum Role {
   ADMIN
 }
 
+enum VoiceDirection {
+  INBOUND
+  OUTBOUND
+  BROWSER
+}
+
 enum SetupStatus {
   NEW
   ONBOARDING
@@ -164,6 +170,12 @@ model Company {
   openclawChannel      String?
   openclawSetupStatus  String?
   openclawLastTestedAt DateTime?
+  // Voice config
+  voiceEnabled         Boolean   @default(false)
+  voiceProvider        String?
+  vapiAssistantId      String?
+  twilioPhoneNumber    String?
+  voiceWebhookSecret   String?
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   members              CompanyMember[]
@@ -175,6 +187,7 @@ model Company {
   auditLogs            AuditLog[]
   subscriptions        Subscription[]
   webhookEvents        WebhookEvent[]
+  voiceCalls           VoiceCall[]
 }
 
 model CompanyMember {
@@ -379,17 +392,24 @@ model AuditLog {
 }
 
 model VoiceCall {
-  id          String   @id @default(cuid())
-  companyId   String
-  leadId      String?
-  status      String   @default("pending")
-  phoneNumber String?
-  duration    Int?
-  transcript  String?  @db.Text
-  recording   String?
-  metadata    Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String         @id @default(cuid())
+  companyId    String
+  leadId       String?
+  provider     String         @default("local")
+  direction    VoiceDirection @default(BROWSER)
+  status       String         @default("pending")
+  phoneNumber  String?
+  duration     Int?
+  transcript   String?        @db.Text
+  summary      String?        @db.Text
+  recording    String?
+  recordingUrl String?
+  startedAt    DateTime?
+  endedAt      DateTime?
+  metadata     Json?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model WebhookEvent {

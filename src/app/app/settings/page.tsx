@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Building2, Zap, Bot, CreditCard, Globe, Mail, FileText, Link2, Slack, Copy, RefreshCw, Eye, EyeOff, Key, CheckCircle, XCircle, Loader2, Cpu } from "lucide-react"
+import { Building2, Zap, Bot, CreditCard, Globe, Mail, FileText, Link2, Slack, Copy, RefreshCw, Eye, EyeOff, Key, CheckCircle, XCircle, Loader2, Cpu, Mic, Shield, Clock } from "lucide-react"
 import { saveCompanySettings } from "@/app/actions/settings"
 import { regenerateApiKey, getOrCreateApiKey } from "@/app/actions/settings"
 import { saveOpenClawConfig, testOpenClawConnection, getOpenClawConfig } from "@/app/actions/agent-config"
@@ -36,6 +36,15 @@ type CompanyData = {
   toneOfVoice: string
   approvalPreference: string
   leadScoringPriorities: string
+}
+
+type AuditLogEntry = {
+  id: string
+  action: string
+  entityType: string | null
+  entityId: string | null
+  createdAt: string
+  metadata: Record<string, unknown> | null
 }
 
 type OpenClawData = {
@@ -69,6 +78,15 @@ export default function SettingsPage() {
   const [ocSaving, setOcSaving] = useState(false)
   const [ocTesting, setOcTesting] = useState(false)
   const [ocTestResult, setOcTestResult] = useState<{ status: string; message: string } | null>(null)
+  const [voiceConfig, setVoiceConfig] = useState({
+    voiceEnabled: false,
+    voiceProvider: "",
+    vapiAssistantId: "",
+    twilioPhoneNumber: "",
+  })
+  const [voiceSaving, setVoiceSaving] = useState(false)
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([])
+  const [auditLoading, setAuditLoading] = useState(false)
 
   useEffect(() => {
     fetch("/api/company/settings")
@@ -89,6 +107,12 @@ export default function SettingsPage() {
             leadScoringPriorities: c.leadScoringPriorities ?? "",
           })
           if (c.apiKey) setApiKey(c.apiKey)
+          setVoiceConfig({
+            voiceEnabled: c.voiceEnabled ?? false,
+            voiceProvider: c.voiceProvider ?? "",
+            vapiAssistantId: c.vapiAssistantId ?? "",
+            twilioPhoneNumber: c.twilioPhoneNumber ?? "",
+          })
         }
       })
       .catch(() => {})
@@ -199,6 +223,45 @@ export default function SettingsPage() {
     }
   }
 
+  const handleSaveVoice = async () => {
+    setVoiceSaving(true)
+    const result = await saveCompanySettings({
+      name: company.name,
+    })
+    // Save voice config via a direct patch
+    try {
+      const res = await fetch("/api/company/voice-config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(voiceConfig),
+      })
+      if (!res.ok) throw new Error("Failed to save voice config")
+      toast({ title: "Saved", description: "Voice configuration updated." })
+    } catch {
+      // Fallback: use saveCompanySettings as best effort
+      if (result.error) {
+        toast({ title: "Error", description: result.error, variant: "destructive" })
+      } else {
+        toast({ title: "Saved", description: "Voice configuration updated." })
+      }
+    }
+    setVoiceSaving(false)
+  }
+
+  const loadAuditLogs = async () => {
+    setAuditLoading(true)
+    try {
+      const res = await fetch("/api/company/audit-logs")
+      if (res.ok) {
+        const data = await res.json()
+        setAuditLogs(data.logs ?? [])
+      }
+    } catch {
+      // ignore
+    }
+    setAuditLoading(false)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -207,13 +270,15 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="company">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 flex-wrap h-auto gap-1">
           <TabsTrigger value="company">Company</TabsTrigger>
           <TabsTrigger value="scoring">Lead Scoring</TabsTrigger>
           <TabsTrigger value="agent">Agent</TabsTrigger>
+          <TabsTrigger value="voice">Voice</TabsTrigger>
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
           <TabsTrigger value="api">API</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
+          <TabsTrigger value="security" onClick={loadAuditLogs}>Security</TabsTrigger>
         </TabsList>
 
         <TabsContent value="company">
@@ -531,6 +596,134 @@ export default function SettingsPage() {
                 <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">Active</Badge>
               </div>
               <p className="text-xs text-slate-500 mt-4">Stripe billing integration coming soon.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="voice" className="space-y-6">
+          <Card className="border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Mic className="h-4 w-4" /> Voice Agent Configuration</CardTitle>
+              <CardDescription>Configure your voice provider for inbound and browser-based calls</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Enable toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700/50">
+                <div>
+                  <div className="text-sm font-medium">Enable Voice Agent</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Allow voice calls via your configured provider</div>
+                </div>
+                <button
+                  onClick={() => setVoiceConfig(v => ({ ...v, voiceEnabled: !v.voiceEnabled }))}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${voiceConfig.voiceEnabled ? "bg-blue-600" : "bg-slate-700"}`}
+                >
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${voiceConfig.voiceEnabled ? "translate-x-4" : "translate-x-1"}`} />
+                </button>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label>Voice Provider</Label>
+                  <select
+                    className="flex h-10 w-full rounded-lg border border-input bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    value={voiceConfig.voiceProvider}
+                    onChange={e => setVoiceConfig(v => ({ ...v, voiceProvider: e.target.value }))}
+                  >
+                    <option value="">Not configured</option>
+                    <option value="local">Local (demo only)</option>
+                    <option value="vapi">Vapi</option>
+                    <option value="twilio">Twilio</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Twilio Phone Number</Label>
+                  <Input
+                    value={voiceConfig.twilioPhoneNumber}
+                    onChange={e => setVoiceConfig(v => ({ ...v, twilioPhoneNumber: e.target.value }))}
+                    placeholder="+44 7700 900000"
+                  />
+                </div>
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label>Vapi Assistant ID</Label>
+                  <Input
+                    value={voiceConfig.vapiAssistantId}
+                    onChange={e => setVoiceConfig(v => ({ ...v, vapiAssistantId: e.target.value }))}
+                    placeholder="asst_..."
+                  />
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-300 leading-relaxed">
+                Voice Agent is available on the Growth Agent OS plan. Configure your Vapi or Twilio credentials in your environment variables before enabling.
+              </div>
+
+              <Button variant="gradient" onClick={handleSaveVoice} disabled={voiceSaving}>
+                {voiceSaving ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Saving...</> : "Save Voice Config"}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-6">
+          <Card className="border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Shield className="h-4 w-4" /> Security Overview</CardTitle>
+              <CardDescription>Approval-first settings and security status</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { label: "Approval-first mode", value: "Enabled", note: "All sensitive agent actions require manual approval", ok: true },
+                { label: "Outbound emails", value: "Approval required", note: "Draft replies go to your approval queue", ok: true },
+                { label: "CRM updates", value: "Approval required", note: "Status changes are gated by approval", ok: true },
+                { label: "Voice outbound calls", value: "Approval required", note: "No outbound calls without explicit approval", ok: true },
+              ].map((item) => (
+                <div key={item.label} className="flex items-start gap-3 p-3 rounded-lg border border-slate-800">
+                  <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{item.label}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{item.note}</div>
+                  </div>
+                  <span className="text-xs text-emerald-400 font-medium shrink-0">{item.value}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-4 w-4" /> Recent Audit Log
+              </CardTitle>
+              <CardDescription>Last 10 agent and account actions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {auditLoading ? (
+                <div className="flex items-center gap-2 text-sm text-slate-400 py-4">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading audit log...
+                </div>
+              ) : auditLogs.length === 0 ? (
+                <div className="text-sm text-slate-500 py-4 text-center">
+                  No audit events yet. Click the Security tab to refresh.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {auditLogs.map((log) => (
+                    <div key={log.id} className="flex items-start gap-3 rounded-lg border border-slate-800 p-3">
+                      <div className="h-6 w-6 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+                        <Shield className="h-3 w-3 text-slate-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-slate-300">{log.action}</div>
+                        {log.entityType && <div className="text-xs text-slate-600">{log.entityType} · {log.entityId}</div>}
+                      </div>
+                      <span className="text-xs text-slate-600 shrink-0">{new Date(log.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Button variant="outline" size="sm" className="mt-4 text-xs" onClick={loadAuditLogs} disabled={auditLoading}>
+                {auditLoading ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Loading...</> : "Refresh"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

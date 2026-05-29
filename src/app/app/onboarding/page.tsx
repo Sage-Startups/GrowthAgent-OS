@@ -17,7 +17,14 @@ const steps = [
   { id: 1, title: "Your Business" },
   { id: 2, title: "Your Customers" },
   { id: 3, title: "Your Setup" },
-  { id: 4, title: "Agent Preferences" },
+  { id: 4, title: "Tone & Preferences" },
+]
+
+const toneOptions = [
+  { value: "Professional and confident", label: "Professional", desc: "Formal, authoritative, trust-building" },
+  { value: "Warm and conversational", label: "Friendly", desc: "Approachable, casual, human" },
+  { value: "Direct and concise", label: "Direct", desc: "No fluff, efficient, to the point" },
+  { value: "Consultative and expert", label: "Premium Consultative", desc: "Thoughtful, advisory, high-touch" },
 ]
 
 const leadSourceOptions = [
@@ -30,6 +37,12 @@ export default function OnboardingPage() {
   const { data: session } = useSession()
   const [step, setStep] = useState(1)
   const [selectedSources, setSelectedSources] = useState<string[]>([])
+  const [selectedTone, setSelectedTone] = useState("Professional and confident")
+  const [agentPrefs, setAgentPrefs] = useState({
+    autoDraftReplies: true,
+    autoApprovalsForHot: false,
+    autoFollowUpSuggestions: true,
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [done, setDone] = useState(false)
 
@@ -45,9 +58,14 @@ export default function OnboardingPage() {
   const onSubmit = async (data: OnboardingInput) => {
     if (!session?.user?.id) return
     setIsSubmitting(true)
+    const approvalNote = agentPrefs.autoApprovalsForHot
+      ? "Auto-approve HOT lead actions"
+      : "Approve everything manually"
     await saveOnboarding(session.user.id, {
       ...data,
       currentLeadSources: selectedSources,
+      toneOfVoice: selectedTone,
+      approvalPreference: approvalNote,
     })
     setDone(true)
     setTimeout(() => router.push("/app"), 1500)
@@ -188,25 +206,53 @@ export default function OnboardingPage() {
 
             {step === 4 && (
               <>
-                <h2 className="text-lg font-semibold">Agent preferences</h2>
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <Label>Preferred Tone of Voice</Label>
-                    <select className="flex h-10 w-full rounded-lg border border-input bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" {...register("toneOfVoice")}>
-                      <option>Professional and confident</option>
-                      <option>Warm and conversational</option>
-                      <option>Direct and concise</option>
-                      <option>Consultative and expert</option>
-                    </select>
+                <h2 className="text-lg font-semibold">Tone &amp; Agent Preferences</h2>
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <Label>Tone of Voice</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {toneOptions.map((t) => (
+                        <button
+                          key={t.value}
+                          type="button"
+                          onClick={() => setSelectedTone(t.value)}
+                          className={cn(
+                            "rounded-lg border px-3 py-3 text-left transition-all",
+                            selectedTone === t.value
+                              ? "border-blue-500/50 bg-blue-500/10"
+                              : "border-slate-700/50 bg-slate-800/40 hover:border-slate-600"
+                          )}
+                        >
+                          <div className={cn("text-xs font-semibold", selectedTone === t.value ? "text-blue-300" : "text-slate-300")}>{t.label}</div>
+                          <div className="text-xs text-slate-500 mt-0.5">{t.desc}</div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <Label>Approval Preference</Label>
-                    <select className="flex h-10 w-full rounded-lg border border-input bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" {...register("approvalPreference")}>
-                      <option>Approve everything manually</option>
-                      <option>Auto-approve CRM updates, manual for emails</option>
-                      <option>Auto-approve all non-external actions</option>
-                    </select>
+
+                  <div className="space-y-2">
+                    <Label>Agent Behaviour</Label>
+                    {[
+                      { key: "autoDraftReplies" as const, label: "Auto-draft replies for new leads", desc: "Agent creates draft emails ready for approval" },
+                      { key: "autoApprovalsForHot" as const, label: "Auto-create approvals for HOT leads", desc: "Immediately queue approval actions for your top leads" },
+                      { key: "autoFollowUpSuggestions" as const, label: "Auto-suggest follow-ups", desc: "Agent surfaces follow-up reminders on overdue leads" },
+                    ].map((pref) => (
+                      <div key={pref.key} className="flex items-center justify-between p-3 rounded-lg border border-slate-700/50">
+                        <div>
+                          <div className="text-sm font-medium">{pref.label}</div>
+                          <div className="text-xs text-slate-400 mt-0.5">{pref.desc}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setAgentPrefs(prev => ({ ...prev, [pref.key]: !prev[pref.key] }))}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${agentPrefs[pref.key] ? "bg-blue-600" : "bg-slate-700"}`}
+                        >
+                          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${agentPrefs[pref.key] ? "translate-x-4" : "translate-x-1"}`} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
+
                   <div className="space-y-1.5">
                     <Label>Lead Scoring Priorities (optional)</Label>
                     <textarea className="flex min-h-[80px] w-full rounded-lg border border-input bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Any specific factors the agent should weight heavily when scoring leads?" {...register("leadScoringPriorities")} />

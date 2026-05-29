@@ -166,6 +166,17 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* The Shift */}
+      <section className="py-24">
+        <div className="container max-w-4xl mx-auto text-center">
+          <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">The Shift</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">The future of digital business operations</h2>
+          <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
+            Basic AI tools wait for prompts. <span className="text-white font-medium">GrowthAgent OS works inside your revenue flow.</span> It turns enquiries into structured opportunities, keeps your CRM alive, prepares your next move and lets you approve anything before it goes out.
+          </p>
+        </div>
+      </section>
+
       {/* Not another chatbot */}
       <section className="py-24 border-y border-slate-800 bg-slate-950/50">
         <div className="container max-w-4xl mx-auto text-center">
@@ -243,6 +254,27 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-base font-semibold mb-2">{f.title}</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Built for digital businesses */}
+      <section className="py-24 bg-slate-950/50">
+        <div className="container">
+          <div className="text-center mb-12">
+            <Badge className="mb-4">Who it&apos;s for</Badge>
+            <h2 className="text-3xl font-bold mb-4">Built for digital service businesses</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">If you sell a service and receive enquiries, GrowthAgent OS was built for you.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {["Digital agencies", "SaaS founders", "Consultants", "Coaches & trainers", "Freelancers", "B2B service businesses"].map((aud) => (
+              <div key={aud} className="glass-card rounded-xl p-5 flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-blue-600/20 flex items-center justify-center shrink-0">
+                  <CheckCircle className="h-4 w-4 text-blue-400" />
+                </div>
+                <span className="text-sm font-medium">{aud}</span>
               </div>
             ))}
           </div>
@@ -347,6 +379,30 @@ export default function HomePage() {
               <div key={faq.q} className="glass-card rounded-xl p-5">
                 <h3 className="text-base font-semibold mb-2">{faq.q}</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Managed installation */}
+      <section className="py-24">
+        <div className="container max-w-3xl mx-auto text-center">
+          <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">Managed Setup</Badge>
+          <h2 className="text-3xl font-bold mb-4">We install and configure it for you</h2>
+          <p className="text-lg text-slate-400 mb-8 leading-relaxed">
+            You do not need to understand prompts, agents or infrastructure. We configure your private GrowthAgent OS workspace, connect your lead sources, train the agent on your business, and test it before going live. You just start approving actions.
+          </p>
+          <div className="grid md:grid-cols-3 gap-4 text-left">
+            {[
+              { step: "01", title: "Discovery Call", desc: "30 minutes to understand your business and lead flow." },
+              { step: "02", title: "Configuration", desc: "We set up your agents, scoring rules, and integrations." },
+              { step: "03", title: "Go Live", desc: "You approve actions and watch your pipeline fill." },
+            ].map((s) => (
+              <div key={s.step} className="glass-card rounded-xl p-5">
+                <div className="text-2xl font-bold gradient-text mb-2">{s.step}</div>
+                <div className="text-sm font-semibold mb-1">{s.title}</div>
+                <div className="text-xs text-slate-400">{s.desc}</div>
               </div>
             ))}
           </div>

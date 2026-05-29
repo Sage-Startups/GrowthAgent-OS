@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, VoiceDirection } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
@@ -125,6 +125,7 @@ async function main() {
       toneOfVoice: "Professional and confident",
       approvalPreference: "Approve everything manually",
       setupStatus: "LIVE",
+      stripePlanName: "Lead Agent Starter",
       members: {
         create: { userId: demoUser.id, role: "USER" },
       },
@@ -161,7 +162,10 @@ async function main() {
     },
   })
 
-  // Leads
+  // 10 realistic leads
+  const now = new Date()
+  const pastDay = (n: number) => new Date(now.getTime() - n * 24 * 60 * 60 * 1000)
+
   const leadsSeed = [
     {
       name: "Sarah Chen",
@@ -178,7 +182,8 @@ async function main() {
       fitSummary: "Excellent ICP match. B2B agency with 20+ staff, clear budget signals.",
       researchSummary: "UK-based financial marketing agency. ~25 staff. Growing website traffic.",
       recommendedAction: "Call within 24 hours. Reference growth ops hiring.",
-      draftReply: "Hi Sarah,\n\nThanks for enquiring about GrowthAgent OS...\n\nBest,\n[Your name]",
+      draftReply: "Hi Sarah,\n\nThanks for enquiring about GrowthAgent OS. I would love to show you how we help agencies like yours qualify and follow up with leads faster.\n\nBest,\n[Your name]",
+      nextFollowUpAt: pastDay(1),
     },
     {
       name: "Marcus Webb",
@@ -196,6 +201,7 @@ async function main() {
       researchSummary: "UK e-commerce brand in home improvement. ~10 staff.",
       recommendedAction: "Follow up with pricing overview.",
       draftReply: "Hi Marcus,\n\nFollowing up on my previous message...\n\nBest,\n[Your name]",
+      nextFollowUpAt: pastDay(3),
     },
     {
       name: "Priya Sharma",
@@ -214,6 +220,116 @@ async function main() {
       recommendedAction: "Prioritise call. Highest value lead this week.",
       draftReply: "Hi Priya,\n\nWe would love to show you GrowthAgent OS in action...\n\nBest,\n[Your name]",
     },
+    {
+      name: "James Fletcher",
+      email: "james@growthlabs.co",
+      phone: "+44 7700 900321",
+      companyName: "GrowthLabs Consulting",
+      website: "growthlabs.co",
+      source: "Google Ads",
+      status: "QUALIFIED" as const,
+      scoreBand: "WARM" as const,
+      score: 71,
+      estimatedValue: 9000,
+      painPoints: "Spending too much time manually qualifying leads from ads.",
+      fitSummary: "Consulting firm with growing team. Good fit for Pipeline plan.",
+      researchSummary: "B2B consulting firm based in Manchester. ~15 staff.",
+      recommendedAction: "Book demo call. Highlight time savings.",
+    },
+    {
+      name: "Emma Wilson",
+      email: "emma@startupco.io",
+      phone: "+44 7700 900654",
+      companyName: "StartupCo",
+      website: "startupco.io",
+      source: "Cold outreach",
+      status: "COLD" as const,
+      scoreBand: "COLD" as const,
+      score: 35,
+      estimatedValue: 2500,
+      painPoints: "No clear budget yet.",
+      fitSummary: "Early stage. Monitor for 3 months.",
+      researchSummary: "Pre-revenue startup. Limited traction.",
+      recommendedAction: "Move to nurture list. Revisit in Q2.",
+    },
+    {
+      name: "Tom Rigby",
+      email: "tom@scalecreative.com",
+      phone: "+44 7700 900987",
+      companyName: "Scale Creative",
+      website: "scalecreative.com",
+      source: "Website form",
+      status: "REPLIED" as const,
+      scoreBand: "WARM" as const,
+      score: 65,
+      estimatedValue: 7500,
+      painPoints: "Agency growing fast, CRM becoming unmanageable.",
+      fitSummary: "Creative agency with real pain around lead management.",
+      researchSummary: "UK creative agency. ~20 staff. Active client portfolio.",
+      recommendedAction: "Prepare discovery call brief.",
+    },
+    {
+      name: "Natasha Okafor",
+      email: "n.okafor@nexusdigital.co.uk",
+      phone: "+44 7700 900112",
+      companyName: "Nexus Digital",
+      website: "nexusdigital.co.uk",
+      source: "Referral",
+      status: "CALL_BOOKED" as const,
+      scoreBand: "HOT" as const,
+      score: 84,
+      estimatedValue: 15000,
+      painPoints: "No process for converting enquiries. Losing deals to follow-up gaps.",
+      fitSummary: "Strong ICP match. Scaling digital agency with multiple clients.",
+      researchSummary: "Digital marketing agency. London. ~30 staff.",
+      recommendedAction: "Call brief prepared. Focus on ROI from faster qualification.",
+    },
+    {
+      name: "David Park",
+      email: "david@coachingacademy.co.uk",
+      phone: "+44 7700 900445",
+      companyName: "The Coaching Academy",
+      website: "coachingacademy.co.uk",
+      source: "Social media",
+      status: "NEW" as const,
+      scoreBand: "WARM" as const,
+      score: 55,
+      estimatedValue: 4500,
+      painPoints: "Unknown — enquiry just received.",
+      fitSummary: "Coaching business with good volume. Worth qualifying.",
+      researchSummary: "Online coaching platform. Small team. Good testimonials.",
+      recommendedAction: "Research and qualify within 24 hours.",
+    },
+    {
+      name: "Sophie Grant",
+      email: "sophie@freelancecopy.co.uk",
+      companyName: "Sophie Grant Copywriting",
+      website: "freelancecopy.co.uk",
+      source: "Website form",
+      status: "BAD_FIT" as const,
+      scoreBand: "BAD_FIT" as const,
+      score: 12,
+      painPoints: "Wants to use the tool for personal use, not business.",
+      fitSummary: "Bad fit. Single freelancer, no lead volume.",
+      researchSummary: "Solo copywriter. No team. Very limited enquiries.",
+      recommendedAction: "Close and archive. Not a fit for any plan.",
+    },
+    {
+      name: "Ryan Maddox",
+      email: "ryan@ecomboost.io",
+      phone: "+44 7700 900776",
+      companyName: "EcomBoost Agency",
+      website: "ecomboost.io",
+      source: "LinkedIn",
+      status: "PROPOSAL_SENT" as const,
+      scoreBand: "HOT" as const,
+      score: 82,
+      estimatedValue: 22000,
+      painPoints: "Managing 50+ new enquiries a month with no system.",
+      fitSummary: "High-volume e-commerce agency. Growth Agent OS fit.",
+      researchSummary: "Performance marketing agency for e-commerce. ~35 staff.",
+      recommendedAction: "Follow up on proposal. Decision expected this week.",
+    },
   ]
 
   for (const leadData of leadsSeed) {
@@ -226,7 +342,7 @@ async function main() {
         leadId: lead.id,
         score: leadData.score ?? 50,
         scoreBand: leadData.scoreBand ?? "COLD",
-        reasoning: `Scored based on ICP match, company signals, and pain point alignment.`,
+        reasoning: "Scored based on ICP match, company signals, and pain point alignment.",
       },
     })
   }
@@ -235,6 +351,7 @@ async function main() {
   const leads = await prisma.lead.findMany({ where: { companyId: demoCompany.id } })
   const sarahLead = leads.find((l) => l.name === "Sarah Chen")
   const marcusLead = leads.find((l) => l.name === "Marcus Webb")
+  const priyaLead = leads.find((l) => l.name === "Priya Sharma")
 
   // Approval requests
   if (sarahLead) {
@@ -269,6 +386,22 @@ async function main() {
     })
   }
 
+  if (priyaLead) {
+    await prisma.approvalRequest.create({
+      data: {
+        companyId: demoCompany.id,
+        leadId: priyaLead.id,
+        createdByAgentId: researchAgent.id,
+        type: "DRAFT_EMAIL",
+        title: "Reply to Priya Sharma — Top Priority",
+        description: "Highest-scored lead this week. Ready to send personalised reply.",
+        proposedAction: "Send personalised email highlighting ROI and booking link.",
+        payload: { emailTo: priyaLead.email },
+        status: "PENDING",
+      },
+    })
+  }
+
   // Agent runs
   for (let i = 0; i < 5; i++) {
     await prisma.agentRun.create({
@@ -281,6 +414,21 @@ async function main() {
       },
     })
   }
+
+  // Voice call (demo)
+  await prisma.voiceCall.create({
+    data: {
+      companyId: demoCompany.id,
+      provider: "local",
+      direction: VoiceDirection.BROWSER,
+      status: "completed",
+      duration: 185,
+      summary: "Demo voice session. Asked about hot leads and follow-ups.",
+      transcript: "User: Summarise today's hot leads. Agent: You have 3 HOT leads...",
+      startedAt: pastDay(1),
+      endedAt: pastDay(1),
+    },
+  })
 
   // Integrations
   const integrationsList = [
@@ -308,13 +456,37 @@ async function main() {
     },
   })
 
+  await prisma.auditLog.create({
+    data: {
+      companyId: demoCompany.id,
+      action: "LEAD_SCORED",
+      entityType: "Lead",
+      entityId: leads[0]?.id,
+      metadata: { scoreBand: "HOT", score: 87 },
+    },
+  })
+
+  await prisma.auditLog.create({
+    data: {
+      companyId: demoCompany.id,
+      action: "VOICE_CALL_RECEIVED",
+      entityType: "VoiceCall",
+      metadata: { direction: "BROWSER", provider: "local" },
+    },
+  })
+
+  // Suppress unused variable warnings
+  void adminUser
+  void starterPlan
+  void growthPlan
+
   console.log("✅ Seed complete!")
   console.log("")
   console.log("👤 Test accounts:")
   console.log("   Admin:  admin@growthagent.os  /  admin123456")
   console.log("   Demo:   demo@example.com      /  demo123456")
   console.log("")
-  console.log(`📊 Created: 3 plans, 2 users, 1 company, ${leadsSeed.length} leads, 2 approval requests, 5 agent runs`)
+  console.log(`📊 Created: 3 plans, 2 users, 1 company, ${leadsSeed.length} leads, 3 approval requests, 5 agent runs, 1 voice call`)
 }
 
 main()

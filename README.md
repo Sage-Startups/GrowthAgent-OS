@@ -91,6 +91,7 @@ After seeding:
 | `/app/leads`         | CRM lead list        |
 | `/app/leads/[id]`    | Lead detail          |
 | `/app/agent`         | Agent chat           |
+| `/app/voice`         | Voice agent          |
 | `/app/approvals`     | Approval queue       |
 | `/app/reports`       | Reports              |
 | `/app/settings`      | Settings             |
@@ -116,6 +117,13 @@ See `.env.example` for all required variables.
 | `STRIPE_SECRET_KEY`    | No       | Stripe secret key              |
 | `STRIPE_PUBLISHABLE_KEY` | No     | Stripe publishable key         |
 | `STRIPE_WEBHOOK_SECRET`  | No     | Stripe webhook signing secret  |
+| `VOICE_PROVIDER`       | No       | Voice provider: local/vapi/twilio |
+| `VAPI_API_KEY`         | No       | Vapi API key                   |
+| `VAPI_ASSISTANT_ID`    | No       | Vapi assistant ID              |
+| `TWILIO_ACCOUNT_SID`   | No       | Twilio account SID             |
+| `TWILIO_AUTH_TOKEN`    | No       | Twilio auth token              |
+| `TWILIO_PHONE_NUMBER`  | No       | Twilio phone number            |
+| `VOICE_WEBHOOK_SECRET` | No       | Secret for voice webhook validation |
 
 ## Database Migrations
 
@@ -153,13 +161,38 @@ src/
     └── next-auth.d.ts     # Type augmentations
 ```
 
-## What's Next (Phase 2)
+## Documentation
 
-- [ ] Wire real leads from database (currently uses mock data)
-- [ ] Connect OpenClaw agent engine
-- [ ] Stripe checkout integration
-- [ ] Real AI lead research (Perplexity / OpenAI)
+See the `/docs` folder for operational guides:
+
+- `LAUNCH_CHECKLIST.md` — Pre-launch verification
+- `CUSTOMER_ONBOARDING.md` — Onboarding new customers
+- `AGENT_SETUP_PROCESS.md` — Agent configuration and flow
+- `OPENCLAW_INTEGRATION.md` — OpenClaw gateway setup
+- `VOICE_INTEGRATION.md` — Vapi and Twilio voice setup
+- `SECURITY_MODEL.md` — Approval-first security architecture
+- `PRICING_AND_PACKAGES.md` — Plan features and pricing
+
+## Plan Feature Gating
+
+Features are gated by plan using `src/lib/plans.ts`:
+
+```typescript
+import { hasFeature } from "@/lib/plans"
+
+// Check if company has a feature
+if (!hasFeature(company, "voice_agent")) {
+  return <UpgradeCard feature="Voice Agent" requiredPlan="Growth OS" />
+}
+```
+
+## What's Next (Phase 5)
+
+- [ ] Stripe checkout integration and billing portal
+- [ ] Real AI lead research (Perplexity / OpenAI via OpenClaw)
 - [ ] Gmail / HubSpot integrations
-- [ ] Vapi voice agent
+- [ ] Vapi browser voice session (WebRTC)
 - [ ] Real-time notifications (Pusher / SSE)
 - [ ] Email delivery (Resend)
+- [ ] Multi-seat team support
+- [ ] Competitor monitoring agent

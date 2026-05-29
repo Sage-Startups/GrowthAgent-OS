@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, Users, Bot, CheckSquare, BarChart3,
-  Settings, LogOut, Bot as BotIcon, Cpu
+  Settings, LogOut, Bot as BotIcon, Cpu, Mic
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 
@@ -14,6 +14,7 @@ const navItems = [
   { href: "/app/leads", label: "CRM Leads", icon: Users },
   { href: "/app/agents", label: "Agent Modules", icon: Cpu },
   { href: "/app/agent", label: "Agent Chat", icon: Bot },
+  { href: "/app/voice", label: "Voice Agent", icon: Mic },
   { href: "/app/approvals", label: "Approvals", icon: CheckSquare },
   { href: "/app/reports", label: "Reports", icon: BarChart3 },
   { href: "/app/settings", label: "Settings", icon: Settings },
