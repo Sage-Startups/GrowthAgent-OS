@@ -302,7 +302,7 @@ export default function SettingsPage() {
                   <Input value={company.businessType} onChange={e => setCompany(c => ({ ...c, businessType: e.target.value }))} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Average Deal Value (£)</Label>
+                  <Label>Average Deal Value ($)</Label>
                   <Input type="number" value={company.averageDealValue} onChange={e => setCompany(c => ({ ...c, averageDealValue: e.target.value }))} />
                 </div>
               </div>
@@ -591,7 +591,7 @@ export default function SettingsPage() {
               <div className="rounded-lg border border-slate-700/50 p-4 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium">Pipeline Agent</div>
-                  <div className="text-xs text-slate-400">£249/month · Active</div>
+                  <div className="text-xs text-slate-400">$249/month · Active</div>
                 </div>
                 <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">Active</Badge>
               </div>

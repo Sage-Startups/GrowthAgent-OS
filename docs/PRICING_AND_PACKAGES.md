@@ -2,7 +2,7 @@
 
 ## Plans
 
-### Lead Agent Starter — £99/mo + £499 setup
+### Lead Agent Starter — $99/mo + $499 setup
 
 Entry point. One AI sales operator, private CRM, basic automation.
 
@@ -15,7 +15,7 @@ Features:
 - Weekly pipeline report
 - 1 lead source
 
-### Pipeline Agent — £249/mo + £1,500 setup
+### Pipeline Agent — $249/mo + $1,500 setup
 
 Full pipeline automation for growing businesses.
 
@@ -27,7 +27,7 @@ Includes everything in Starter, plus:
 - Pipeline report with trends
 - Monthly optimisation review
 
-### Growth Agent OS — from £599/mo + from £3,000 setup
+### Growth Agent OS — from $599/mo + from $3,000 setup
 
 Complete AI revenue operation for scaling businesses.
 

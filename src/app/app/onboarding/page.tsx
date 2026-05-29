@@ -148,7 +148,7 @@ export default function OnboardingPage() {
                     {errors.mainOffer && <p className="text-xs text-red-400">{errors.mainOffer.message}</p>}
                   </div>
                   <div className="space-y-1.5 col-span-2">
-                    <Label>Average Deal Value (£)</Label>
+                    <Label>Average Deal Value ($)</Label>
                     <Input type="number" placeholder="5000" {...register("averageDealValue", { valueAsNumber: true })} />
                   </div>
                 </div>

@@ -84,7 +84,7 @@ export function AddLeadModal({ open, onClose }: Props) {
               <Input value={form.source} onChange={e => set("source", e.target.value)} placeholder="Website form, Referral..." />
             </div>
             <div className="col-span-2 space-y-1.5">
-              <Label>Estimated Value (£)</Label>
+              <Label>Estimated Value ($)</Label>
               <Input type="number" value={form.estimatedValue} onChange={e => set("estimatedValue", e.target.value)} placeholder="5000" />
             </div>
           </div>

@@ -10,8 +10,8 @@ const plans = [
   {
     name: "Lead Agent Starter",
     tagline: "Your first AI sales operator",
-    setup: "£499",
-    monthly: "£99",
+    setup: "$499",
+    monthly: "$99",
     highlight: false,
     features: [
       "Private dashboard",
@@ -34,8 +34,8 @@ const plans = [
   {
     name: "Pipeline Agent",
     tagline: "Full pipeline automation",
-    setup: "£1,500",
-    monthly: "£249",
+    setup: "$1,500",
+    monthly: "$249",
     highlight: true,
     features: [
       "Everything in Starter",
@@ -58,8 +58,8 @@ const plans = [
   {
     name: "Growth Agent OS",
     tagline: "Complete AI revenue operation",
-    setup: "from £3,000",
-    monthly: "from £599",
+    setup: "from $3,000",
+    monthly: "from $599",
     highlight: false,
     features: [
       "Everything in Pipeline",

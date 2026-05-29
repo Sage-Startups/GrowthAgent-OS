@@ -129,7 +129,7 @@ export default function HomePage() {
                   {[
                     { label: "Total Leads", value: "47", color: "text-blue-400" },
                     { label: "Hot Leads", value: "8", color: "text-red-400" },
-                    { label: "Pipeline Value", value: "£84k", color: "text-emerald-400" },
+                    { label: "Pipeline Value", value: "$84k", color: "text-emerald-400" },
                     { label: "Approvals Due", value: "3", color: "text-yellow-400" },
                   ].map((s) => (
                     <div key={s.label} className="rounded-lg bg-slate-800/60 border border-slate-700/50 p-3">
@@ -141,9 +141,9 @@ export default function HomePage() {
                 {/* Mock lead rows */}
                 <div className="space-y-2">
                   {[
-                    { name: "Sarah Chen", co: "Fintech Agency", score: "HOT", value: "£12k" },
-                    { name: "Marcus Webb", co: "E-commerce Brand", score: "WARM", value: "£6k" },
-                    { name: "Priya Sharma", co: "SaaS Startup", score: "HOT", value: "£18k" },
+                    { name: "Sarah Chen", co: "Fintech Agency", score: "HOT", value: "$12k" },
+                    { name: "Marcus Webb", co: "E-commerce Brand", score: "WARM", value: "$6k" },
+                    { name: "Priya Sharma", co: "SaaS Startup", score: "HOT", value: "$18k" },
                   ].map((l) => (
                     <div key={l.name} className="flex items-center justify-between rounded-lg bg-slate-800/40 border border-slate-700/30 px-4 py-2.5">
                       <div className="flex items-center gap-3">
@@ -349,9 +349,9 @@ export default function HomePage() {
           <p className="text-slate-400 mb-10">From your first lead agent to a full AI revenue operation.</p>
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             {[
-              { name: "Lead Agent Starter", setup: "£499", monthly: "£99", desc: "First lead agent + private CRM", highlight: false },
-              { name: "Pipeline Agent", setup: "£1,500", monthly: "£249", desc: "Full pipeline automation", highlight: true },
-              { name: "Growth Agent OS", setup: "from £3,000", monthly: "from £599", desc: "Complete AI revenue operation", highlight: false },
+              { name: "Lead Agent Starter", setup: "$499", monthly: "$99", desc: "First lead agent + private CRM", highlight: false },
+              { name: "Pipeline Agent", setup: "$1,500", monthly: "$249", desc: "Full pipeline automation", highlight: true },
+              { name: "Growth Agent OS", setup: "from $3,000", monthly: "from $599", desc: "Complete AI revenue operation", highlight: false },
             ].map((p) => (
               <div key={p.name} className={`rounded-xl p-6 border transition-all ${p.highlight ? "border-blue-500/50 bg-blue-600/10 glow-blue" : "border-slate-700/50 bg-slate-900/60"}`}>
                 {p.highlight && <Badge className="mb-3 border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs">Most Popular</Badge>}

@@ -34,7 +34,7 @@ export default function AdminCustomersPage() {
         <div className="text-sm text-slate-400">
           Total MRR:{" "}
           <span className="text-emerald-400 font-bold">
-            £{mockCustomers.reduce((a, c) => a + c.mrr, 0).toLocaleString()}
+            ${mockCustomers.reduce((a, c) => a + c.mrr, 0).toLocaleString()}
           </span>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function AdminCustomersPage() {
                     </td>
                     <td className="px-5 py-3.5 text-sm text-slate-300">{c.users}</td>
                     <td className="px-5 py-3.5 text-sm text-slate-300">{c.leads}</td>
-                    <td className="px-5 py-3.5 text-sm font-medium text-emerald-400">£{c.mrr}/mo</td>
+                    <td className="px-5 py-3.5 text-sm font-medium text-emerald-400">${c.mrr}/mo</td>
                     <td className="px-5 py-3.5 text-xs text-slate-500">{formatDate(c.createdAt)}</td>
                     <td className="px-5 py-3.5">
                       <Button variant="ghost" size="sm" className="h-7 px-2">

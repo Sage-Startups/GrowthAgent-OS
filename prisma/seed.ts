@@ -118,7 +118,7 @@ async function main() {
       businessType: "Agency",
       mainOffer: "Performance marketing and conversion optimisation for e-commerce brands",
       averageDealValue: 5000,
-      idealCustomerProfile: "E-commerce brands with £1M+ revenue looking to scale paid acquisition",
+      idealCustomerProfile: "E-commerce brands with $1M+ revenue looking to scale paid acquisition",
       badFitTraits: "Startups with no revenue, no budget for testing",
       leadSources: ["Website contact form", "Referrals", "LinkedIn"],
       currentCRM: "HubSpot",

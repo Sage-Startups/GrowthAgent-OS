@@ -36,7 +36,7 @@ function companyBlock(c: CompanyCtx): string {
 - Ideal Customer: ${c.idealCustomerProfile ?? "Not specified"}
 - Bad Fit: ${c.badFitTraits ?? "Not specified"}
 - Tone: ${c.toneOfVoice ?? "Professional"}
-- Avg Deal: ${c.averageDealValue ? `£${c.averageDealValue}` : "Not specified"}`
+- Avg Deal: ${c.averageDealValue ? `$${c.averageDealValue}` : "Not specified"}`
 }
 
 function leadBlock(l: LeadCtx): string {
@@ -47,7 +47,7 @@ function leadBlock(l: LeadCtx): string {
 - Website: ${l.website ?? "Not provided"}
 - Source: ${l.source ?? "Unknown"}
 - Enquiry: ${l.message ?? "No message provided"}
-- Est. Value: ${l.estimatedValue ? `£${l.estimatedValue}` : "Not specified"}
+- Est. Value: ${l.estimatedValue ? `$${l.estimatedValue}` : "Not specified"}
 - Score: ${l.score ?? "Not scored"} / Band: ${l.scoreBand ?? "Not scored"}`
 }
 

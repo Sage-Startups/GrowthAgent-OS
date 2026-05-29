@@ -81,7 +81,7 @@ async function localCallPrep(companyId: string, leadId: string): Promise<AgentTa
 
   const brief = [
     `# Sales Call Brief — ${lead.name} (${lead.companyName ?? "Unknown"})`,
-    `## Lead Summary\n- Name: ${lead.name}\n- Company: ${lead.companyName ?? "N/A"}\n- Score: ${lead.score ?? "N/A"}/100 (${lead.scoreBand ?? "Unscored"})\n- Est. Value: ${lead.estimatedValue ? `£${lead.estimatedValue.toLocaleString()}` : "N/A"}`,
+    `## Lead Summary\n- Name: ${lead.name}\n- Company: ${lead.companyName ?? "N/A"}\n- Score: ${lead.score ?? "N/A"}/100 (${lead.scoreBand ?? "Unscored"})\n- Est. Value: ${lead.estimatedValue ? `$${lead.estimatedValue.toLocaleString()}` : "N/A"}`,
     `## Company Overview\n${lead.researchSummary ?? "Research not yet completed."}`,
     `## Likely Pain Points\n${lead.painPoints ?? "To be uncovered on the call."}`,
     `## Discovery Questions\n1. What is driving this need right now?\n2. Have you tried to solve this before?\n3. What does success look like in 6 months?\n4. Who else is involved in the decision?\n5. What is your timeline?\n6. What budget have you set aside?`,
@@ -116,7 +116,7 @@ async function localChatCommand(cmd: string, companyId: string): Promise<string>
   if (lower.includes("hot lead") || lower.includes("hottest")) {
     const leads = await prisma.lead.findMany({ where: { companyId, scoreBand: "HOT" }, orderBy: { score: "desc" }, take: 5 })
     if (!leads.length) return "No HOT leads yet. Run qualification to score your leads."
-    return `Your ${leads.length} hottest leads:\n\n${leads.map((l, i) => `${i + 1}. **${l.name}** (${l.companyName ?? "Unknown"}) — ${l.score}/100${l.estimatedValue ? `, £${l.estimatedValue.toLocaleString()}` : ""}`).join("\n")}`
+    return `Your ${leads.length} hottest leads:\n\n${leads.map((l, i) => `${i + 1}. **${l.name}** (${l.companyName ?? "Unknown"}) — ${l.score}/100${l.estimatedValue ? `, $${l.estimatedValue.toLocaleString()}` : ""}`).join("\n")}`
   }
   if (lower.includes("follow up") || lower.includes("follow-up")) {
     const leads = await prisma.lead.findMany({ where: { companyId, nextFollowUpAt: { lte: new Date() } }, take: 5 })
@@ -141,7 +141,7 @@ async function localChatCommand(cmd: string, companyId: string): Promise<string>
     const leads = await prisma.lead.findMany({ where: { companyId, estimatedValue: { not: null } }, select: { estimatedValue: true, scoreBand: true } })
     const total = leads.reduce((s, l) => s + (l.estimatedValue ?? 0), 0)
     const hot = leads.filter(l => l.scoreBand === "HOT").reduce((s, l) => s + (l.estimatedValue ?? 0), 0)
-    return `Pipeline value:\n💰 Total: £${total.toLocaleString()}\n🔴 HOT: £${hot.toLocaleString()}`
+    return `Pipeline value:\n💰 Total: $${total.toLocaleString()}\n🔴 HOT: $${hot.toLocaleString()}`
   }
   const [total, hotCount, pending] = await Promise.all([prisma.lead.count({ where: { companyId } }), prisma.lead.count({ where: { companyId, scoreBand: "HOT" } }), prisma.approvalRequest.count({ where: { companyId, status: "PENDING" } })])
   return `Pipeline snapshot:\n- Total leads: ${total}\n- HOT: ${hotCount}\n- Pending approvals: ${pending}\n\nTry: "show hot leads", "who needs follow-up", "pipeline value", "summarise this week"`

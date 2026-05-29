@@ -265,7 +265,7 @@ export async function loadDemoLeads() {
         companyName: "Hartley Digital",
         website: "hartleydigital.co.uk",
         source: "Website form",
-        message: "Hi, we need a complete website redesign for our e-commerce brand. We have a budget and need to move quickly — ideally launching before our summer campaign. Turnover is around £2M. Looking for a serious agency partner.",
+        message: "Hi, we need a complete website redesign for our e-commerce brand. We have a budget and need to move quickly — ideally launching before our summer campaign. Turnover is around $2M. Looking for a serious agency partner.",
         estimatedValue: 12000,
         status: "NEW" as const,
       },

@@ -89,7 +89,7 @@ export function scoreLead(company: CompanySettings, lead: LeadInput): LeadScorin
   // High estimated value
   const value = lead.estimatedValue ?? 0
   if (value > 5000) {
-    breakdown.push({ factor: "High deal value", points: 10, description: `Estimated value £${value.toLocaleString()} exceeds threshold` })
+    breakdown.push({ factor: "High deal value", points: 10, description: `Estimated value $${value.toLocaleString()} exceeds threshold` })
     score += 10
   }
 
@@ -148,7 +148,7 @@ export function scoreLead(company: CompanySettings, lead: LeadInput): LeadScorin
   const painPoints: string[] = []
   if (urgencyMatches.length > 0) painPoints.push("Time-sensitive requirement — needs fast response")
   if (budgetMatches.length > 0) painPoints.push("Active budget for this solution")
-  if (value > 0) painPoints.push(`Estimated deal value: £${value.toLocaleString()}`)
+  if (value > 0) painPoints.push(`Estimated deal value: $${value.toLocaleString()}`)
   if (message.length > 50) {
     const sentences = message.split(/[.!?]+/).filter((s) => s.trim().length > 10)
     if (sentences.length > 0) painPoints.push(`Key concern: "${sentences[0].trim()}"`)
