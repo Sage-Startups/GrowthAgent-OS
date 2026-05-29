@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Building2, Zap, Bot, CreditCard, Shield, Globe, Mail, FileText, Link2, Slack, Copy, RefreshCw, Eye, EyeOff, Key } from "lucide-react"
+import { Building2, Zap, Bot, CreditCard, Globe, Mail, FileText, Link2, Slack, Copy, RefreshCw, Eye, EyeOff, Key, CheckCircle, XCircle, Loader2, Cpu } from "lucide-react"
 import { saveCompanySettings } from "@/app/actions/settings"
 import { regenerateApiKey, getOrCreateApiKey } from "@/app/actions/settings"
+import { saveOpenClawConfig, testOpenClawConnection, getOpenClawConfig } from "@/app/actions/agent-config"
 import { useToast } from "@/components/ui/use-toast"
 
 const integrations = [
@@ -37,6 +38,18 @@ type CompanyData = {
   leadScoringPriorities: string
 }
 
+type OpenClawData = {
+  openclawEnabled: boolean
+  openclawGatewayUrl: string
+  openclawAgentId: string
+  openclawWorkspaceId: string
+  openclawApiKey: string
+  openclawChannel: string
+  openclawSetupStatus: string | null
+  openclawLastTestedAt: Date | null
+  hasApiKey: boolean
+}
+
 export default function SettingsPage() {
   const { toast } = useToast()
   const [saving, setSaving] = useState(false)
@@ -48,10 +61,16 @@ export default function SettingsPage() {
     averageDealValue: "", idealCustomerProfile: "", badFitTraits: "",
     toneOfVoice: "", approvalPreference: "", leadScoringPriorities: "",
   })
+  const [oc, setOc] = useState<OpenClawData>({
+    openclawEnabled: false, openclawGatewayUrl: "", openclawAgentId: "",
+    openclawWorkspaceId: "", openclawApiKey: "", openclawChannel: "",
+    openclawSetupStatus: null, openclawLastTestedAt: null, hasApiKey: false,
+  })
+  const [ocSaving, setOcSaving] = useState(false)
+  const [ocTesting, setOcTesting] = useState(false)
+  const [ocTestResult, setOcTestResult] = useState<{ status: string; message: string } | null>(null)
 
   useEffect(() => {
-    // Load company data via server action (we call getOrCreateApiKey which returns company data)
-    // For now, load the settings from a fetch to the current session
     fetch("/api/company/settings")
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -73,6 +92,23 @@ export default function SettingsPage() {
         }
       })
       .catch(() => {})
+
+    getOpenClawConfig().then(res => {
+      if (res && "config" in res && res.config) {
+        const cfg = res.config
+        setOc({
+          openclawEnabled: cfg.openclawEnabled ?? false,
+          openclawGatewayUrl: cfg.openclawGatewayUrl ?? "",
+          openclawAgentId: cfg.openclawAgentId ?? "",
+          openclawWorkspaceId: cfg.openclawWorkspaceId ?? "",
+          openclawApiKey: "",
+          openclawChannel: cfg.openclawChannel ?? "",
+          openclawSetupStatus: cfg.openclawSetupStatus ?? null,
+          openclawLastTestedAt: cfg.openclawLastTestedAt ? new Date(cfg.openclawLastTestedAt as unknown as string) : null,
+          hasApiKey: cfg.hasApiKey ?? false,
+        })
+      }
+    }).catch(() => {})
   }, [])
 
   const handleSave = async () => {
@@ -124,6 +160,44 @@ export default function SettingsPage() {
   }
 
   const maskedKey = apiKey ? `${apiKey.slice(0, 8)}${"•".repeat(24)}${apiKey.slice(-4)}` : null
+
+  const handleSaveOpenClaw = async () => {
+    setOcSaving(true)
+    const result = await saveOpenClawConfig({
+      openclawEnabled: oc.openclawEnabled,
+      openclawGatewayUrl: oc.openclawGatewayUrl || undefined,
+      openclawAgentId: oc.openclawAgentId || undefined,
+      openclawWorkspaceId: oc.openclawWorkspaceId || undefined,
+      openclawApiKey: oc.openclawApiKey || undefined,
+      openclawChannel: oc.openclawChannel || undefined,
+    })
+    setOcSaving(false)
+    if (result.error) {
+      toast({ title: "Error", description: result.error, variant: "destructive" })
+    } else {
+      setOc(prev => ({ ...prev, openclawApiKey: "", hasApiKey: prev.hasApiKey || !!prev.openclawApiKey }))
+      toast({ title: "Saved", description: "Agent engine configuration updated." })
+    }
+  }
+
+  const handleTestOpenClaw = async () => {
+    setOcTesting(true)
+    setOcTestResult(null)
+    const result = await testOpenClawConnection()
+    setOcTesting(false)
+    if (result.error) {
+      setOcTestResult({ status: "failed", message: result.error })
+      toast({ title: "Connection failed", description: result.error, variant: "destructive" })
+    } else if ("status" in result) {
+      setOcTestResult({ status: result.status ?? "failed", message: result.message ?? "" })
+      if (result.success) {
+        toast({ title: "Connected", description: "OpenClaw gateway is reachable." })
+        setOc(prev => ({ ...prev, openclawSetupStatus: "connected", openclawLastTestedAt: new Date() }))
+      } else {
+        toast({ title: "Connection failed", description: result.message ?? "Could not reach gateway.", variant: "destructive" })
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -217,30 +291,144 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="agent">
+        <TabsContent value="agent" className="space-y-6">
+          {/* Current engine status */}
           <Card className="border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Bot className="h-4 w-4" /> Agent Configuration</CardTitle>
-              <CardDescription>How your AI agent behaves and communicates</CardDescription>
+              <CardTitle className="flex items-center gap-2"><Cpu className="h-4 w-4" /> Agent Engine</CardTitle>
+              <CardDescription>The engine powering your AI agents. Local mode uses the built-in deterministic engine. OpenClaw enables advanced LLM-powered analysis.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-lg border border-slate-700/50 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-medium">Lead Research Agent</div>
-                    <div className="text-xs text-slate-400">Researches and scores incoming leads</div>
+            <CardContent>
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700/50 bg-slate-900/50">
+                <div className={`h-2.5 w-2.5 rounded-full ${oc.openclawEnabled ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{oc.openclawEnabled ? "OpenClaw Gateway" : "Local Deterministic Engine"}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">
+                    {oc.openclawEnabled
+                      ? oc.openclawSetupStatus === "connected" ? "Connected and ready" : "Configured — run a test to verify"
+                      : "Built-in engine active — no external API required"
+                    }
                   </div>
-                  <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">Active</Badge>
+                </div>
+                <Badge className={oc.openclawEnabled ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs" : "border-slate-700 text-slate-400 text-xs"}>
+                  {oc.openclawEnabled ? "OpenClaw" : "Local"}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* OpenClaw config */}
+          <Card className="border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Bot className="h-4 w-4" /> OpenClaw Integration</CardTitle>
+              <CardDescription>Connect an OpenClaw gateway for LLM-powered lead analysis and multi-agent workflows.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Enable toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700/50">
+                <div>
+                  <div className="text-sm font-medium">Enable OpenClaw</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Route agent tasks through your OpenClaw gateway</div>
+                </div>
+                <button
+                  onClick={() => setOc(prev => ({ ...prev, openclawEnabled: !prev.openclawEnabled }))}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${oc.openclawEnabled ? "bg-blue-600" : "bg-slate-700"}`}
+                >
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${oc.openclawEnabled ? "translate-x-4" : "translate-x-1"}`} />
+                </button>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label>Gateway URL</Label>
+                  <Input
+                    value={oc.openclawGatewayUrl}
+                    onChange={e => setOc(prev => ({ ...prev, openclawGatewayUrl: e.target.value }))}
+                    placeholder="https://your-gateway.openclaw.ai"
+                    disabled={!oc.openclawEnabled}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Agent ID</Label>
+                  <Input
+                    value={oc.openclawAgentId}
+                    onChange={e => setOc(prev => ({ ...prev, openclawAgentId: e.target.value }))}
+                    placeholder="agent_..."
+                    disabled={!oc.openclawEnabled}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Workspace ID</Label>
+                  <Input
+                    value={oc.openclawWorkspaceId}
+                    onChange={e => setOc(prev => ({ ...prev, openclawWorkspaceId: e.target.value }))}
+                    placeholder="ws_..."
+                    disabled={!oc.openclawEnabled}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Channel</Label>
+                  <Input
+                    value={oc.openclawChannel}
+                    onChange={e => setOc(prev => ({ ...prev, openclawChannel: e.target.value }))}
+                    placeholder="default"
+                    disabled={!oc.openclawEnabled}
+                  />
+                </div>
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label>
+                    API Key / Token
+                    {oc.hasApiKey && <span className="ml-2 text-xs text-emerald-400">Key saved — enter a new one to replace it</span>}
+                  </Label>
+                  <Input
+                    type="password"
+                    value={oc.openclawApiKey}
+                    onChange={e => setOc(prev => ({ ...prev, openclawApiKey: e.target.value }))}
+                    placeholder={oc.hasApiKey ? "••••••••••••••••" : "Bearer token or API key"}
+                    disabled={!oc.openclawEnabled}
+                    autoComplete="new-password"
+                  />
                 </div>
               </div>
-              <div className="rounded-lg border border-slate-700/50 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-medium">Follow-Up Agent</div>
-                    <div className="text-xs text-slate-400">Tracks and surfaces overdue follow-ups</div>
-                  </div>
-                  <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">Active</Badge>
+
+              {/* Test result */}
+              {ocTestResult && (
+                <div className={`flex items-center gap-2 rounded-lg p-3 text-sm ${
+                  ocTestResult.status === "connected"
+                    ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                    : "bg-red-500/10 border border-red-500/20 text-red-400"
+                }`}>
+                  {ocTestResult.status === "connected"
+                    ? <CheckCircle className="h-4 w-4 shrink-0" />
+                    : <XCircle className="h-4 w-4 shrink-0" />
+                  }
+                  <span>{ocTestResult.message}</span>
                 </div>
+              )}
+
+              {oc.openclawLastTestedAt && !ocTestResult && (
+                <div className="text-xs text-slate-500">
+                  Last tested: {new Date(oc.openclawLastTestedAt).toLocaleString()}
+                  {oc.openclawSetupStatus === "connected" && <span className="ml-2 text-emerald-400">Connected</span>}
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <Button variant="gradient" onClick={handleSaveOpenClaw} disabled={ocSaving}>
+                  {ocSaving ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Saving...</> : "Save Configuration"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleTestOpenClaw}
+                  disabled={ocTesting || !oc.openclawGatewayUrl}
+                >
+                  {ocTesting ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Testing...</> : "Test Connection"}
+                </Button>
+              </div>
+
+              <div className="text-xs text-slate-500 leading-relaxed">
+                If OpenClaw is unavailable or credentials are missing, all agent tasks automatically fall back to the local engine.
+                Your leads continue to be scored and processed without interruption.
               </div>
             </CardContent>
           </Card>
