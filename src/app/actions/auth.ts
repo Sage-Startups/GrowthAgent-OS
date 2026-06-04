@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { signUpSchema } from "@/lib/validations";
+import { isAdminEmail } from "@/lib/env";
 import { z } from "zod";
 
 export async function signUp(data: z.infer<typeof signUpSchema>) {
@@ -21,7 +22,13 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const user = await prisma.user.create({
-    data: { name, email, password: hashedPassword },
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+      // Emails in the ADMIN_EMAILS allowlist are granted super-admin on signup
+      role: isAdminEmail(email) ? "ADMIN" : "USER",
+    },
   });
 
   return { success: true, userId: user.id };
