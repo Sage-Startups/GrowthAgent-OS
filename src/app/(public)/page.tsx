@@ -39,19 +39,19 @@ const agentModules = [
 const faqs = [
   {
     q: "Is this an AI chatbot?",
-    a: "No. Chatbots respond to prompts. GrowthAgent OS proactively works inside your revenue flow — researching leads, scoring them, and preparing actions — without you having to ask."
+    a: "No. Chatbots respond to prompts. GrowthAgent OS is an AI employee — it proactively works inside your revenue flow, researching leads, scoring them, and preparing actions, without you having to ask."
   },
   {
-    q: "Do I need to set up integrations?",
-    a: "Your GrowthAgent OS is configured during a dedicated setup session. We connect your lead sources, adapt the agent to your business, and test it before going live."
+    q: "How do I approve what the AI does?",
+    a: "Your AI employee sends everything it prepares — scored leads, draft replies, follow-ups — to your private CRM. You can review and approve right there, or confirm actions straight from your phone or email. Nothing goes out without your sign-off."
   },
   {
-    q: "Can I control what the agent does?",
-    a: "Yes. The approval queue gives you full control over sensitive actions. The agent drafts; you approve. Nothing goes out without your sign-off."
+    q: "Do I have to set it up myself?",
+    a: "No. We build and configure your AI employee for your specific business during onboarding — your ideal customer, your tone, your scoring rules — then monitor and fine-tune it every month."
   },
   {
-    q: "What CRMs does it support?",
-    a: "GrowthAgent OS has its own built-in CRM. It can also sync with HubSpot, Pipedrive, and other tools — configured during your setup."
+    q: "Where do I see the AI's work?",
+    a: "Everything lands in your private CRM — your single review hub. Every lead, score, draft, and follow-up the AI prepares is there for you to review anytime, from any device."
   },
   {
     q: "How quickly can I get started?",
@@ -78,16 +78,16 @@ export default function HomePage() {
             </Badge>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-              AI agents that turn{" "}
-              <span className="gradient-text">enquiries into</span>
+              Hire an{" "}
+              <span className="gradient-text">AI employee</span>
               <br />
-              qualified sales opportunities.
+              that closes your leads.
             </h1>
 
             <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-              GrowthAgent OS gives your digital business a private AI sales operator that researches
-              every new lead, scores the opportunity, drafts replies, prepares sales calls and keeps
-              your pipeline organised — all from one premium dashboard.
+              For a fraction of the cost of a sales hire, your AI employee researches every new lead,
+              scores the opportunity, drafts replies, preps your calls and follows up — then sends it all
+              to your private CRM. You approve the work from your phone or email. Nothing happens without your say-so.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -345,19 +345,19 @@ export default function HomePage() {
       <section className="py-24">
         <div className="container max-w-4xl mx-auto text-center">
           <Badge className="mb-6">Simple Pricing</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Plans that grow with you</h2>
-          <p className="text-slate-400 mb-10">From your first lead agent to a full AI revenue operation.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Hire your first AI employee</h2>
+          <p className="text-slate-400 mb-10">A fraction of the cost of a sales hire. We build it, you approve the work.</p>
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             {[
-              { name: "Lead Agent Starter", setup: "$499", monthly: "$99", desc: "First lead agent + private CRM", highlight: false },
-              { name: "Pipeline Agent", setup: "$1,500", monthly: "$249", desc: "Full pipeline automation", highlight: true },
-              { name: "Growth Agent OS", setup: "from $3,000", monthly: "from $599", desc: "Complete AI revenue operation", highlight: false },
+              { name: "AI Sales Assistant", setup: "$500", monthly: "$497", desc: "1 AI agent + private CRM review hub", highlight: false },
+              { name: "AI Sales Team", setup: "$1,000", monthly: "$997", desc: "3 AI agents working your pipeline", highlight: true },
+              { name: "Full AI Revenue OS", setup: "$1,500", monthly: "$1,997", desc: "A complete AI sales department", highlight: false },
             ].map((p) => (
               <div key={p.name} className={`rounded-xl p-6 border transition-all ${p.highlight ? "border-blue-500/50 bg-blue-600/10 glow-blue" : "border-slate-700/50 bg-slate-900/60"}`}>
                 {p.highlight && <Badge className="mb-3 border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs">Most Popular</Badge>}
                 <div className="text-sm font-semibold text-slate-400 mb-1">{p.name}</div>
                 <div className="text-3xl font-bold mb-0.5">{p.monthly}<span className="text-lg text-slate-400">/mo</span></div>
-                <div className="text-xs text-slate-500 mb-3">+ {p.setup} setup</div>
+                <div className="text-xs text-slate-500 mb-3">+ {p.setup} setup &amp; build</div>
                 <p className="text-xs text-slate-400">{p.desc}</p>
               </div>
             ))}
