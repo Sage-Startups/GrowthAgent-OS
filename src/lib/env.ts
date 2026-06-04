@@ -24,4 +24,15 @@ export const env = {
   VOICE_WEBHOOK_SECRET: process.env.VOICE_WEBHOOK_SECRET ?? undefined,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ?? "",
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  // Comma-separated list of emails that are auto-granted ADMIN on signup
+  ADMIN_EMAILS: process.env.ADMIN_EMAILS ?? "",
+}
+
+// Returns true if the given email should be granted the ADMIN role on signup.
+export function isAdminEmail(email: string): boolean {
+  const allowlist = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean)
+  return allowlist.includes(email.trim().toLowerCase())
 }
