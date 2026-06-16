@@ -38,6 +38,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma
-prisma/*.db
-prisma/*.db-journal
+# Claude Code session files
+.claude/
+
