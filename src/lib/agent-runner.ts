@@ -1,6 +1,14 @@
 import { prisma } from "@/lib/db"
 import { getAgentProvider } from "@/lib/agents"
 import type { AgentTaskType, AgentTaskOutput } from "@/lib/agents"
+import {
+  checkCanRunTask,
+  reserveCredits,
+  deductCredits,
+  refundCredits,
+  incrementCounter,
+  taskTypeToCreditAction,
+} from "./usage-service"
 
 export type { AgentTaskType }
 
@@ -11,11 +19,21 @@ export async function runAgentTask(
   options: { leadId?: string; userId?: string; input?: Record<string, unknown> } = {}
 ) {
   const startedAt = Date.now()
+
+  // Credit gating — check before touching anything paid
+  const check = await checkCanRunTask(companyId, taskType, {})
+  if (!check.allowed) {
+    return { success: false, error: check.reason }
+  }
+
   const company = await prisma.company.findUnique({ where: { id: companyId } })
 
   const agentRun = await prisma.agentRun.create({
     data: { agentId, status: "running", input: { taskType, ...options.input } as any },
   })
+
+  // Reserve credits optimistically
+  await reserveCredits(companyId, agentRun.id, check.estimatedCost)
 
   try {
     await prisma.auditLog.create({
@@ -32,6 +50,26 @@ export async function runAgentTask(
       data: { status: output.success ? "completed" : "failed", output: output as any, durationMs: Date.now() - startedAt },
     })
 
+    if (output.success) {
+      // Deduct actual credits and write ledger
+      const actionType = taskTypeToCreditAction(taskType)
+      await deductCredits(
+        companyId,
+        check.estimatedCost,
+        actionType,
+        agentRun.id,
+        `${taskType} completed successfully`,
+        { taskType, leadId: options.leadId }
+      )
+      // Increment per-feature counters
+      if (taskType === "QUALIFY_LEAD") await incrementCounter(companyId, "leads", 1)
+      if (taskType === "GENERATE_REPLY" || taskType === "CREATE_FOLLOW_UP") await incrementCounter(companyId, "replies", 1)
+      if (taskType === "PREPARE_SALES_CALL") await incrementCounter(companyId, "callBriefs", 1)
+    } else {
+      // Task ran but returned failure — refund reserved credits
+      await refundCredits(companyId, check.estimatedCost, agentRun.id, "Task returned failure")
+    }
+
     if (options.userId) {
       await prisma.auditLog.create({
         data: { companyId, userId: options.userId, action: output.success ? "AGENT_TASK_COMPLETED" : "AGENT_TASK_FAILED", entityType: "AgentRun", entityId: agentRun.id, metadata: { taskType, leadId: options.leadId } as any },
@@ -42,6 +80,8 @@ export async function runAgentTask(
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error"
     await prisma.agentRun.update({ where: { id: agentRun.id }, data: { status: "failed", error: msg, durationMs: Date.now() - startedAt } })
+    // Refund reserved credits on exception
+    await refundCredits(companyId, check.estimatedCost, agentRun.id, "Task failed before execution")
     if (options.userId) {
       await prisma.auditLog.create({
         data: { companyId, userId: options.userId, action: "AGENT_TASK_FAILED", entityType: "AgentRun", entityId: agentRun.id, metadata: { taskType, error: msg } as any },

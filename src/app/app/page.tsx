@@ -8,10 +8,11 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import {
   Users, TrendingUp, Flame, Thermometer, Clock, DollarSign,
-  CheckSquare, Zap, Bot, ArrowRight, Star, Bell, CheckCircle, Circle
+  CheckSquare, Zap, Bot, ArrowRight, Star, Bell, CheckCircle, Circle, Gauge
 } from "lucide-react"
 import { formatCurrency, formatRelativeTime } from "@/lib/utils"
 import { getPlanTier } from "@/lib/plans"
+import { getCompanyUsage } from "@/lib/usage-service"
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -44,6 +45,7 @@ export default async function DashboardPage() {
     hotLeadsList,
     overdueFu,
     pendingDrafts,
+    companyUsage,
   ] = await Promise.all([
     prisma.lead.count({ where: { companyId } }),
     prisma.lead.count({ where: { companyId, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } }),
@@ -71,6 +73,7 @@ export default async function DashboardPage() {
       take: 3,
       select: { id: true, title: true },
     }),
+    getCompanyUsage(companyId),
   ])
 
   const pipelineValue = pipelineValueResult._sum.estimatedValue ?? 0
@@ -262,6 +265,57 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* AI Work Credits card */}
+          {(() => {
+            const used = companyUsage.creditsUsedThisCycle
+            const limit = companyUsage.monthlyCreditLimit
+            const remaining = companyUsage.creditsRemaining
+            const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0
+            const resetDate = companyUsage.billingCycleEnd.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+            return (
+              <Card className="border-slate-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Gauge className="h-4 w-4 text-blue-400" /> AI Work Credits
+                    <Badge variant="outline" className="ml-auto text-xs text-slate-400 capitalize">{companyUsage.planName}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="text-slate-400">{remaining.toLocaleString()} remaining</span>
+                      <span className="text-slate-500">{limit.toLocaleString()} total</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-800">
+                      <div
+                        className={`h-2 rounded-full transition-all ${pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-yellow-500" : "bg-blue-500"}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">Resets {resetDate}</p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="rounded-md bg-slate-800/50 px-2 py-1.5">
+                      <div className="text-xs font-semibold">{companyUsage.leadsSourcedThisCycle}</div>
+                      <div className="text-xs text-slate-500">Leads</div>
+                    </div>
+                    <div className="rounded-md bg-slate-800/50 px-2 py-1.5">
+                      <div className="text-xs font-semibold">{companyUsage.repliesDraftedThisCycle}</div>
+                      <div className="text-xs text-slate-500">Replies</div>
+                    </div>
+                    <div className="rounded-md bg-slate-800/50 px-2 py-1.5">
+                      <div className="text-xs font-semibold">{companyUsage.callBriefsThisCycle}</div>
+                      <div className="text-xs text-slate-500">Briefs</div>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="w-full text-xs h-7" asChild>
+                    <Link href="/app/usage">View full usage <ArrowRight className="ml-1 h-3 w-3" /></Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )
+          })()}
 
           {/* Quick actions */}
           <h2 className="text-sm font-semibold text-slate-400 px-1">Quick Actions</h2>

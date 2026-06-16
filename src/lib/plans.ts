@@ -73,3 +73,80 @@ export function getPlanTier(company: CompanyLike): "Starter" | "Pipeline" | "Gro
   if (features === PIPELINE_FEATURES) return "Pipeline"
   return "Starter"
 }
+
+// ---------- Credit / usage limits ----------
+
+export type PlanLimits = {
+  monthlyCreditLimit: number
+  maxLeadsPerMonth: number
+  maxRepliesPerMonth: number
+  maxCallBriefsPerMonth: number
+  maxVoiceMinutesPerMonth: number
+  maxActiveAgents: number
+  maxConcurrentTasks: number
+  maxLeadsPerTask: number
+  maxDraftsPerTask: number
+  maxBriefsPerTask: number
+}
+
+const STARTER_LIMITS: PlanLimits = {
+  monthlyCreditLimit: 500,
+  maxLeadsPerMonth: 250,
+  maxRepliesPerMonth: 100,
+  maxCallBriefsPerMonth: 25,
+  maxVoiceMinutesPerMonth: 30,
+  maxActiveAgents: 1,
+  maxConcurrentTasks: 1,
+  maxLeadsPerTask: 50,
+  maxDraftsPerTask: 25,
+  maxBriefsPerTask: 5,
+}
+
+const PIPELINE_LIMITS: PlanLimits = {
+  monthlyCreditLimit: 1500,
+  maxLeadsPerMonth: 1000,
+  maxRepliesPerMonth: 400,
+  maxCallBriefsPerMonth: 100,
+  maxVoiceMinutesPerMonth: 100,
+  maxActiveAgents: 3,
+  maxConcurrentTasks: 3,
+  maxLeadsPerTask: 150,
+  maxDraftsPerTask: 75,
+  maxBriefsPerTask: 20,
+}
+
+const GROWTH_LIMITS: PlanLimits = {
+  monthlyCreditLimit: 5000,
+  maxLeadsPerMonth: 3000,
+  maxRepliesPerMonth: 1000,
+  maxCallBriefsPerMonth: 300,
+  maxVoiceMinutesPerMonth: 300,
+  maxActiveAgents: 5,
+  maxConcurrentTasks: 10,
+  maxLeadsPerTask: 500,
+  maxDraftsPerTask: 200,
+  maxBriefsPerTask: 50,
+}
+
+export const PLAN_LIMITS: Record<string, PlanLimits> = {
+  // Current plans
+  "ai sales assistant": STARTER_LIMITS,
+  "ai sales team": PIPELINE_LIMITS,
+  "full ai revenue os": GROWTH_LIMITS,
+  // Generic aliases
+  starter: STARTER_LIMITS,
+  pipeline: PIPELINE_LIMITS,
+  growth: GROWTH_LIMITS,
+  // Legacy plans
+  "lead agent starter": STARTER_LIMITS,
+  "pipeline agent": PIPELINE_LIMITS,
+  "growth agent os": GROWTH_LIMITS,
+}
+
+export function getPlanLimits(planName: string): PlanLimits {
+  const key = planName.toLowerCase()
+  if (PLAN_LIMITS[key]) return PLAN_LIMITS[key]
+  if (key.includes("revenue os") || key.includes("growth")) return GROWTH_LIMITS
+  if (key.includes("team") || key.includes("pipeline")) return PIPELINE_LIMITS
+  return STARTER_LIMITS
+}

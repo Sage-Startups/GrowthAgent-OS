@@ -6,12 +6,12 @@ import { Search, ExternalLink } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 
 const mockCustomers = [
-  { id: "1", name: "Fintech Agency Ltd", plan: "Pipeline Agent", status: "LIVE", users: 3, leads: 47, setupStatus: "LIVE", mrr: 249, createdAt: new Date("2026-01-15") },
-  { id: "2", name: "BuilderBrand Co", plan: "Lead Agent Starter", status: "LIVE", users: 1, leads: 23, setupStatus: "LIVE", mrr: 99, createdAt: new Date("2026-02-01") },
-  { id: "3", name: "SaaS Launch HQ", plan: "Growth Agent OS", status: "LIVE", users: 5, leads: 134, setupStatus: "LIVE", mrr: 599, createdAt: new Date("2025-11-20") },
-  { id: "4", name: "Agency X", plan: "Pipeline Agent", status: "TESTING", users: 2, leads: 8, setupStatus: "TESTING", mrr: 249, createdAt: new Date("2026-05-01") },
-  { id: "5", name: "GrowthCo", plan: "Lead Agent Starter", status: "ONBOARDING", users: 1, leads: 0, setupStatus: "ONBOARDING", mrr: 99, createdAt: new Date("2026-05-20") },
-  { id: "6", name: "Consulting DG", plan: "Pipeline Agent", status: "CONFIGURING", users: 2, leads: 3, setupStatus: "CONFIGURING", mrr: 249, createdAt: new Date("2026-05-10") },
+  { id: "1", name: "Fintech Agency Ltd", plan: "Pipeline Agent", status: "LIVE", users: 3, leads: 47, setupStatus: "LIVE", mrr: 249, createdAt: new Date("2026-01-15"), creditsRemaining: 820, creditLimit: 1500 },
+  { id: "2", name: "BuilderBrand Co", plan: "Lead Agent Starter", status: "LIVE", users: 1, leads: 23, setupStatus: "LIVE", mrr: 99, createdAt: new Date("2026-02-01"), creditsRemaining: 312, creditLimit: 500 },
+  { id: "3", name: "SaaS Launch HQ", plan: "Growth Agent OS", status: "LIVE", users: 5, leads: 134, setupStatus: "LIVE", mrr: 599, createdAt: new Date("2025-11-20"), creditsRemaining: 3100, creditLimit: 5000 },
+  { id: "4", name: "Agency X", plan: "Pipeline Agent", status: "TESTING", users: 2, leads: 8, setupStatus: "TESTING", mrr: 249, createdAt: new Date("2026-05-01"), creditsRemaining: 1500, creditLimit: 1500 },
+  { id: "5", name: "GrowthCo", plan: "Lead Agent Starter", status: "ONBOARDING", users: 1, leads: 0, setupStatus: "ONBOARDING", mrr: 99, createdAt: new Date("2026-05-20"), creditsRemaining: 500, creditLimit: 500 },
+  { id: "6", name: "Consulting DG", plan: "Pipeline Agent", status: "CONFIGURING", users: 2, leads: 3, setupStatus: "CONFIGURING", mrr: 249, createdAt: new Date("2026-05-10"), creditsRemaining: 1440, creditLimit: 1500 },
 ]
 
 const statusColors: Record<string, string> = {
@@ -50,7 +50,7 @@ export default function AdminCustomersPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-800">
-                  {["Company", "Plan", "Setup Status", "Users", "Leads", "MRR", "Since", ""].map((h) => (
+                  {["Company", "Plan", "Setup Status", "Users", "Leads", "Credits", "MRR", "Since", ""].map((h) => (
                     <th key={h} className="text-left text-xs font-semibold text-slate-400 px-5 py-3">
                       {h}
                     </th>
@@ -83,6 +83,15 @@ export default function AdminCustomersPage() {
                     </td>
                     <td className="px-5 py-3.5 text-sm text-slate-300">{c.users}</td>
                     <td className="px-5 py-3.5 text-sm text-slate-300">{c.leads}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="text-xs text-slate-300">{c.creditsRemaining.toLocaleString()} / {c.creditLimit.toLocaleString()}</div>
+                      <div className="h-1 rounded-full bg-slate-800 mt-1 w-20">
+                        <div
+                          className={`h-1 rounded-full ${Math.round((c.creditsRemaining / c.creditLimit) * 100) < 20 ? "bg-red-500" : "bg-blue-500"}`}
+                          style={{ width: `${Math.min(100, Math.round((c.creditsRemaining / c.creditLimit) * 100))}%` }}
+                        />
+                      </div>
+                    </td>
                     <td className="px-5 py-3.5 text-sm font-medium text-emerald-400">${c.mrr}/mo</td>
                     <td className="px-5 py-3.5 text-xs text-slate-500">{formatDate(c.createdAt)}</td>
                     <td className="px-5 py-3.5">

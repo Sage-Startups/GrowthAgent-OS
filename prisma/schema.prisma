@@ -188,6 +188,9 @@ model Company {
   subscriptions        Subscription[]
   webhookEvents        WebhookEvent[]
   voiceCalls           VoiceCall[]
+  usage                CompanyUsage?
+  creditLedger         CreditLedger[]
+  usageEvents          UsageEvent[]
 }
 
 model CompanyMember {
@@ -321,15 +324,18 @@ model AgentTask {
 }
 
 model AgentRun {
-  id         String   @id @default(cuid())
-  agentId    String
-  status     String
-  input      Json?
-  output     Json?
-  error      String?  @db.Text
-  durationMs Int?
-  createdAt  DateTime @default(now())
-  agent      Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(cuid())
+  agentId             String
+  status              String
+  input               Json?
+  output              Json?
+  error               String?  @db.Text
+  durationMs          Int?
+  estimatedCreditCost Int?
+  actualCreditCost    Int?
+  creditsReserved     Int      @default(0)
+  createdAt           DateTime @default(now())
+  agent               Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 }
 
 model ApprovalRequest {
@@ -423,4 +429,49 @@ model WebhookEvent {
   error       String?
   createdAt   DateTime @default(now())
   company     Company? @relation(fields: [companyId], references: [id])
+}
+
+model CompanyUsage {
+  id                      String   @id @default(cuid())
+  companyId               String   @unique
+  planName                String   @default("starter")
+  monthlyCreditLimit      Int      @default(500)
+  creditsUsedThisCycle    Int      @default(0)
+  creditsRemaining        Int      @default(500)
+  leadsSourcedThisCycle   Int      @default(0)
+  repliesDraftedThisCycle Int      @default(0)
+  callBriefsThisCycle     Int      @default(0)
+  voiceMinutesThisCycle   Int      @default(0)
+  activeAgentLimit        Int      @default(1)
+  concurrentTaskLimit     Int      @default(1)
+  billingCycleStart       DateTime @default(now())
+  billingCycleEnd         DateTime
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  company                 Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model CreditLedger {
+  id             String   @id @default(cuid())
+  companyId      String
+  taskId         String?
+  actionType     String
+  creditsChanged Int
+  balanceAfter   Int
+  description    String
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now())
+  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model UsageEvent {
+  id          String   @id @default(cuid())
+  companyId   String
+  eventType   String
+  quantity    Int      @default(1)
+  unit        String
+  costCredits Int      @default(0)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
