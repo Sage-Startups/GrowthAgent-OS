@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -34,7 +33,6 @@ const leadSourceOptions = [
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const { data: session } = useSession()
   const [step, setStep] = useState(1)
   const [selectedSources, setSelectedSources] = useState<string[]>([])
   const [selectedTone, setSelectedTone] = useState("Professional and confident")
@@ -45,6 +43,7 @@ export default function OnboardingPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [done, setDone] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const { register, handleSubmit, formState: { errors } } = useForm<OnboardingInput>({
     resolver: zodResolver(onboardingSchema),
@@ -56,19 +55,32 @@ export default function OnboardingPage() {
   }
 
   const onSubmit = async (data: OnboardingInput) => {
-    if (!session?.user?.id) return
     setIsSubmitting(true)
-    const approvalNote = agentPrefs.autoApprovalsForHot
-      ? "Auto-approve HOT lead actions"
-      : "Approve everything manually"
-    await saveOnboarding(session.user.id, {
-      ...data,
-      currentLeadSources: selectedSources,
-      toneOfVoice: selectedTone,
-      approvalPreference: approvalNote,
-    })
-    setDone(true)
-    setTimeout(() => router.push("/app"), 1500)
+    setSubmitError(null)
+    try {
+      const approvalNote = agentPrefs.autoApprovalsForHot
+        ? "Auto-approve HOT lead actions"
+        : "Approve everything manually"
+      const result = await saveOnboarding({
+        ...data,
+        currentLeadSources: selectedSources,
+        toneOfVoice: selectedTone,
+        approvalPreference: approvalNote,
+      })
+      if (result?.error) {
+        setSubmitError(result.error)
+        setIsSubmitting(false)
+        return
+      }
+      setDone(true)
+      setTimeout(() => {
+        router.refresh()
+        router.push("/app")
+      }, 1500)
+    } catch {
+      setSubmitError("Something went wrong. Please try again.")
+      setIsSubmitting(false)
+    }
   }
 
   if (done) {
@@ -261,6 +273,12 @@ export default function OnboardingPage() {
               </>
             )}
           </div>
+
+          {submitError && (
+            <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400 text-center">
+              {submitError}
+            </div>
+          )}
 
           <div className="flex justify-between mt-6">
             <Button type="button" variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={step === 1}>
