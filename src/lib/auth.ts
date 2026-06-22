@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { isAdminEmail } from "@/lib/env";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -26,6 +27,12 @@ export const authOptions: NextAuthOptions = {
         if (!user || !user.password) return null;
         const passwordMatch = await bcrypt.compare(credentials.password, user.password);
         if (!passwordMatch) return null;
+        // Promote to ADMIN on login if email is in allowlist — covers accounts
+        // created before ADMIN_EMAILS was configured
+        if (isAdminEmail(user.email ?? "") && user.role !== "ADMIN") {
+          await prisma.user.update({ where: { id: user.id }, data: { role: "ADMIN" } });
+          return { ...user, role: "ADMIN" };
+        }
         return user;
       },
     }),
