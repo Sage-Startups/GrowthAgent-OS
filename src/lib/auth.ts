@@ -1,12 +1,15 @@
 import { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { isAdminEmail } from "@/lib/env";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  // No database adapter: we use JWT sessions with the Credentials provider.
+  // Authentication is handled manually in `authorize` and user creation in the
+  // signup action, so the adapter is unused — and having it present conflicts
+  // with JWT session-token persistence for credentials logins.
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
