@@ -3,11 +3,15 @@ import Stripe from "stripe"
 import { prisma } from "@/lib/db"
 import { resetMonthlyCredits, applyPlanLimits } from "@/lib/usage-service"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2025-02-24.acacia",
-})
-
 export async function POST(request: Request) {
+  // Initialise Stripe lazily inside the handler so missing env vars at build
+  // time don't crash module initialisation during Vercel's page-data collection
+  const stripeKey = process.env.STRIPE_SECRET_KEY
+  if (!stripeKey) {
+    return NextResponse.json({ error: "Stripe not configured" }, { status: 503 })
+  }
+  const stripe = new Stripe(stripeKey, { apiVersion: "2025-02-24.acacia" })
+
   const body = await request.text()
   const signature = request.headers.get("stripe-signature")
 
@@ -17,8 +21,7 @@ export async function POST(request: Request) {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
   if (!webhookSecret) {
-    console.error("STRIPE_WEBHOOK_SECRET is not set")
-    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 500 })
+    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 503 })
   }
 
   let event: Stripe.Event
