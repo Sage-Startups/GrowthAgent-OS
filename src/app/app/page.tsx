@@ -8,11 +8,21 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/db"
 import {
   Users, TrendingUp, Flame, Thermometer, Clock, DollarSign,
-  CheckSquare, Zap, Bot, ArrowRight, Star, Bell, CheckCircle, Circle, Gauge
+  CheckSquare, Zap, Bot, ArrowRight, Star, Bell, CheckCircle, Circle, Gauge, ShieldCheck
 } from "lucide-react"
 import { formatCurrency, formatRelativeTime } from "@/lib/utils"
-import { getPlanTier } from "@/lib/plans"
+import { getPlanDisplay } from "@/lib/plans"
 import { getCompanyUsage } from "@/lib/usage-service"
+
+// Friendly framing of the setup lifecycle for the customer
+const EMPLOYEE_STATUS: Record<string, { label: string; detail: string; dot: string }> = {
+  NEW: { label: "Being built", detail: "We're building your AI employee around your business right now.", dot: "bg-yellow-400" },
+  ONBOARDING: { label: "Being built", detail: "We're building your AI employee around your business right now.", dot: "bg-yellow-400" },
+  CONFIGURING: { label: "Being configured", detail: "We're tuning your employee's scoring rules and tone of voice.", dot: "bg-violet-400" },
+  TESTING: { label: "In final testing", detail: "We're testing your employee on real scenarios before it goes live.", dot: "bg-blue-400" },
+  LIVE: { label: "On the job", detail: "Working your pipeline and sending everything here for your review.", dot: "bg-emerald-400" },
+  PAUSED: { label: "Paused", detail: "Your AI employee is paused. Contact us to resume it.", dot: "bg-red-400" },
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -76,6 +86,8 @@ export default async function DashboardPage() {
     getCompanyUsage(companyId),
   ])
 
+  const activeAgents = await prisma.agent.count({ where: { companyId, status: "ACTIVE" } })
+
   const pipelineValue = pipelineValueResult._sum.estimatedValue ?? 0
 
   // Setup progress checks
@@ -87,7 +99,8 @@ export default async function DashboardPage() {
     { label: "First lead qualified", done: hotLeads > 0 || warmLeads > 0 },
   ]
   const setupProgress = Math.round((setupChecks.filter(c => c.done).length / setupChecks.length) * 100)
-  const planTier = getPlanTier(company)
+  const plan = getPlanDisplay(companyUsage.planName ?? company.stripePlanName)
+  const employeeStatus = EMPLOYEE_STATUS[company.setupStatus] ?? EMPLOYEE_STATUS.NEW
 
   const statCards = [
     { label: "Total Leads", value: totalLeads, icon: Users, color: "text-blue-400", bg: "bg-blue-400/10" },
@@ -96,8 +109,8 @@ export default async function DashboardPage() {
     { label: "Warm Leads", value: warmLeads, icon: Thermometer, color: "text-orange-400", bg: "bg-orange-400/10" },
     { label: "Follow-Ups Due", value: followUpsDue, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-400/10" },
     { label: "Pipeline Value", value: formatCurrency(pipelineValue), icon: DollarSign, color: "text-emerald-400", bg: "bg-emerald-400/10" },
-    { label: "Agent Tasks Done", value: agentTasksDone, icon: Zap, color: "text-violet-400", bg: "bg-violet-400/10" },
-    { label: "Pending Approvals", value: pendingApprovals, icon: CheckSquare, color: "text-yellow-400", bg: "bg-yellow-400/10" },
+    { label: "Tasks Completed", value: agentTasksDone, icon: Zap, color: "text-violet-400", bg: "bg-violet-400/10" },
+    { label: "Awaiting Your Approval", value: pendingApprovals, icon: CheckSquare, color: "text-yellow-400", bg: "bg-yellow-400/10" },
   ]
 
   return (
@@ -107,10 +120,10 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold">
             Good morning, {session?.user?.name?.split(" ")[0] ?? "there"} 👋
           </h1>
-          <p className="text-slate-400 mt-1">Here is your sales pipeline overview for today.</p>
+          <p className="text-slate-400 mt-1">Here&apos;s what your AI employee has been working on for you.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs text-slate-400">{planTier}</Badge>
+          <Badge variant="outline" className="text-xs text-slate-400">{plan.shortLabel}</Badge>
           {pendingApprovals > 0 && (
             <Badge className="border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs">
               <Bell className="h-3 w-3 mr-1" /> {pendingApprovals} approval{pendingApprovals !== 1 ? "s" : ""}
@@ -118,6 +131,41 @@ export default async function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* AI Employee status */}
+      <Card className="border-slate-800 bg-gradient-to-r from-slate-900 to-slate-900/40">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative shrink-0">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              <span className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-slate-900 ${employeeStatus.dot}`} />
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-semibold">Your AI Employee</span>
+                <Badge variant="outline" className="text-xs text-slate-300">{employeeStatus.label}</Badge>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">{employeeStatus.detail}</p>
+            </div>
+            <div className="flex items-center gap-5 text-center shrink-0">
+              <div>
+                <div className="text-lg font-bold">{activeAgents}</div>
+                <div className="text-[10px] text-slate-500 uppercase tracking-wide">Active agents</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold">{agentTasksDone}</div>
+                <div className="text-[10px] text-slate-500 uppercase tracking-wide">Tasks done</div>
+              </div>
+            </div>
+            <div className="hidden xl:flex items-center gap-1.5 text-xs text-slate-500 shrink-0 border-l border-slate-800 pl-5">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+              Monitored &amp; tuned monthly by our team
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -141,7 +189,7 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center gap-2">
             <Bot className="h-5 w-5 text-blue-400" />
-            <h2 className="text-lg font-semibold">Today&apos;s Agent Briefing</h2>
+            <h2 className="text-lg font-semibold">Prepared for your review</h2>
             <Badge className="ml-auto text-xs border-blue-500/30 bg-blue-500/10 text-blue-400">Live</Badge>
           </div>
 
@@ -173,7 +221,7 @@ export default async function DashboardPage() {
               <CardContent className="py-10 text-center">
                 <Users className="h-8 w-8 text-slate-600 mx-auto mb-3" />
                 <div className="text-sm font-medium mb-1">No leads yet</div>
-                <p className="text-xs text-slate-500 mb-4">Add your first lead or load demo data to see the briefing.</p>
+                <p className="text-xs text-slate-500 mb-4">As soon as leads arrive, your AI employee researches and scores them, then queues the results here.</p>
                 <Button variant="gradient" size="sm" asChild>
                   <Link href="/app/leads">Go to CRM</Link>
                 </Button>
@@ -185,8 +233,8 @@ export default async function DashboardPage() {
                 <div className="flex items-start gap-3">
                   <Zap className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-blue-400 mb-1">Agent Insight</p>
-                    <p className="text-sm text-slate-300">No HOT leads yet. Run qualification on your new leads to start scoring your pipeline.</p>
+                    <p className="text-xs font-semibold text-blue-400 mb-1">From your AI employee</p>
+                    <p className="text-sm text-slate-300">No HOT leads yet. I&apos;m still qualifying your newer leads — scored results will appear here as I work through them.</p>
                   </div>
                 </div>
               </CardContent>
@@ -321,9 +369,9 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-semibold text-slate-400 px-1">Quick Actions</h2>
           <div className="space-y-2">
             {[
+              { href: "/app/approvals", label: "Approve your employee's work", icon: CheckSquare, color: "text-yellow-400", badge: pendingApprovals > 0 ? pendingApprovals : undefined },
               { href: "/app/leads", label: "View all leads", icon: Users, color: "text-blue-400" },
-              { href: "/app/approvals", label: "Review approvals", icon: CheckSquare, color: "text-yellow-400", badge: pendingApprovals > 0 ? pendingApprovals : undefined },
-              { href: "/app/agent", label: "Chat with agent", icon: Bot, color: "text-violet-400" },
+              { href: "/app/agent", label: "Chat with your employee", icon: Bot, color: "text-violet-400" },
               { href: "/app/reports", label: "View reports", icon: TrendingUp, color: "text-emerald-400" },
             ].map((action) => (
               <Link

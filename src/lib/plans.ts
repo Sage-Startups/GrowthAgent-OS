@@ -150,3 +150,26 @@ export function getPlanLimits(planName: string): PlanLimits {
   if (key.includes("team") || key.includes("pipeline")) return PIPELINE_LIMITS
   return STARTER_LIMITS
 }
+
+// ---------- Display names & pricing ----------
+
+export type PlanDisplay = {
+  label: string
+  shortLabel: string
+  monthlyPrice: number
+  setupFee: number
+}
+
+const PLAN_DISPLAYS: { starter: PlanDisplay; pipeline: PlanDisplay; growth: PlanDisplay } = {
+  starter: { label: "AI Sales Assistant", shortLabel: "Assistant", monthlyPrice: 497, setupFee: 500 },
+  pipeline: { label: "AI Sales Team", shortLabel: "Sales Team", monthlyPrice: 997, setupFee: 1000 },
+  growth: { label: "Full AI Revenue OS", shortLabel: "Revenue OS", monthlyPrice: 1997, setupFee: 1500 },
+}
+
+// Resolves any plan name (current, alias, or legacy) to its display info
+export function getPlanDisplay(planName: string | null | undefined): PlanDisplay {
+  const key = (planName ?? "starter").toLowerCase()
+  if (key.includes("revenue os") || key.includes("growth")) return PLAN_DISPLAYS.growth
+  if (key.includes("team") || key.includes("pipeline")) return PLAN_DISPLAYS.pipeline
+  return PLAN_DISPLAYS.starter
+}
