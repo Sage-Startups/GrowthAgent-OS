@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import {
   ArrowRight, Bot, Brain, CheckCircle, ChevronRight, Clock, FileText,
   Globe, LayoutDashboard, Lock, MessageSquare, Phone, Search, Shield,
-  Sparkles, Star, TrendingUp, Users, Zap
+  Sparkles, Star, TrendingUp, Users, Zap, CreditCard, ClipboardList,
+  Wrench, Rocket
 } from "lucide-react"
 
 const features = [
@@ -55,9 +56,66 @@ const faqs = [
   },
   {
     q: "How quickly can I get started?",
-    a: "Most clients are live within 5–7 business days of setup. Book a demo and we will walk you through the onboarding timeline."
+    a: "Most clients are live within 5–7 business days. The full journey is laid out step-by-step in the section above — your total time investment is about an hour, and we handle the rest."
   },
 ]
+
+const onboardingSteps = [
+  {
+    icon: Sparkles,
+    day: "Day 1",
+    who: "You",
+    time: "15 min",
+    title: "Try the demo, then book a call",
+    desc: "Click around the live demo to see what owning an AI employee feels like. Then book a walkthrough — we look at your lead flow together and recommend the right plan. No pressure, no jargon.",
+  },
+  {
+    icon: CreditCard,
+    day: "Day 1",
+    who: "You",
+    time: "5 min",
+    title: "Hire your AI employee",
+    desc: "Pick your plan and pay the one-time setup fee. You get instant access to your private workspace while we start the build.",
+  },
+  {
+    icon: ClipboardList,
+    day: "Day 1–2",
+    who: "You",
+    time: "10 min",
+    title: "Tell us about your business",
+    desc: "A guided setup wizard captures your ideal customer, your offer, your tone of voice and where your leads come from. That becomes your employee's job description.",
+  },
+  {
+    icon: Phone,
+    day: "Day 2–3",
+    who: "Together",
+    time: "30 min",
+    title: "Kickoff call",
+    desc: "We go deeper than any form can. You show us a few real past leads — one you won, one you lost, one that wasted your time — and replies you actually liked. That's how we calibrate scoring and voice.",
+  },
+  {
+    icon: Wrench,
+    day: "Day 3–6",
+    who: "We handle it",
+    time: null,
+    title: "We build, train and test",
+    desc: "We configure your agents, run your real past leads through them, and send you sample outputs — scores, draft replies, a call brief — for your sign-off before anything goes live.",
+  },
+  {
+    icon: Rocket,
+    day: "Day 5–7",
+    who: "Together",
+    time: "15 min",
+    title: "Go live",
+    desc: "We connect your lead sources and walk you through your workspace. From that moment your employee works every lead that arrives — and we keep monitoring and tuning it every month.",
+  },
+]
+
+const whoStyles: Record<string, string> = {
+  "You": "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  "Together": "bg-violet-500/15 text-violet-400 border-violet-500/30",
+  "We handle it": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+}
 
 export default function HomePage() {
   return (
@@ -382,6 +440,61 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Onboarding journey */}
+      <section id="getting-started" className="py-24">
+        <div className="container max-w-3xl mx-auto">
+          <div className="text-center mb-14">
+            <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">From signup to live in 5–7 days</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Exactly what happens when you sign up</h2>
+            <p className="text-lg text-slate-400 leading-relaxed">
+              No prompts to write, no software to learn. Your total time investment is about an hour —
+              we do the rest. Here&apos;s the whole journey, step by step.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-5 top-4 bottom-4 w-px bg-gradient-to-b from-blue-500/50 via-violet-500/40 to-emerald-500/50 hidden sm:block" />
+            <div className="space-y-5">
+              {onboardingSteps.map((step, i) => (
+                <div key={step.title} className="relative flex gap-5">
+                  <div className="relative z-10 h-10 w-10 rounded-full bg-slate-900 border border-slate-700 items-center justify-center shrink-0 hidden sm:flex">
+                    <step.icon className="h-4 w-4 text-blue-400" />
+                  </div>
+                  <div className="glass-card rounded-xl p-5 flex-1 hover:border-blue-500/30 transition-all">
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <span className="text-xs font-bold gradient-text">Step {i + 1}</span>
+                      <span className="text-xs text-slate-500">· {step.day}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${whoStyles[step.who]}`}>
+                        {step.who}
+                      </span>
+                      {step.time && (
+                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                          <Clock className="h-3 w-3" /> {step.time} of your time
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-base font-semibold mb-1.5">{step.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-sm text-slate-500 mb-5">After go-live: we monitor your employee, tune it monthly, and you approve its work from your phone, email or CRM.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button variant="gradient" size="lg" asChild className="h-12 px-8">
+                <Link href="/demo">Start Step 1 — Try the Demo <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild className="h-12 px-8">
+                <Link href="/book-demo">Book a Walkthrough</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-24 bg-slate-950/50">
         <div className="container max-w-3xl mx-auto">
@@ -393,30 +506,6 @@ export default function HomePage() {
               <div key={faq.q} className="glass-card rounded-xl p-5">
                 <h3 className="text-base font-semibold mb-2">{faq.q}</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Managed installation */}
-      <section className="py-24">
-        <div className="container max-w-3xl mx-auto text-center">
-          <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">Managed Setup</Badge>
-          <h2 className="text-3xl font-bold mb-4">We install and configure it for you</h2>
-          <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-            You do not need to understand prompts, agents or infrastructure. We configure your private GrowthAgent OS workspace, connect your lead sources, train the agent on your business, and test it before going live. You just start approving actions.
-          </p>
-          <div className="grid md:grid-cols-3 gap-4 text-left">
-            {[
-              { step: "01", title: "Discovery Call", desc: "30 minutes to understand your business and lead flow." },
-              { step: "02", title: "Configuration", desc: "We set up your agents, scoring rules, and integrations." },
-              { step: "03", title: "Go Live", desc: "You approve actions and watch your pipeline fill." },
-            ].map((s) => (
-              <div key={s.step} className="glass-card rounded-xl p-5">
-                <div className="text-2xl font-bold gradient-text mb-2">{s.step}</div>
-                <div className="text-sm font-semibold mb-1">{s.title}</div>
-                <div className="text-xs text-slate-400">{s.desc}</div>
               </div>
             ))}
           </div>
