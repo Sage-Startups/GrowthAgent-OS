@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -8,9 +9,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { demoRequestSchema, type DemoRequestInput } from "@/lib/validations"
-import { CheckCircle, Calendar } from "lucide-react"
+import { CheckCircle, Calendar, Sparkles, ArrowRight } from "lucide-react"
 
-export default function DemoPage() {
+export default function BookDemoPage() {
   const [submitted, setSubmitted] = useState(false)
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<DemoRequestInput>({
     resolver: zodResolver(demoRequestSchema),
@@ -30,9 +31,12 @@ export default function DemoPage() {
             <CheckCircle className="h-8 w-8 text-emerald-400" />
           </div>
           <h1 className="text-3xl font-bold mb-3">Request received!</h1>
-          <p className="text-slate-400">
-            Thanks for your interest in GrowthAgent OS. We will review your information and reach out within 1 business day to schedule your personalised demo.
+          <p className="text-slate-400 mb-8">
+            Thanks for your interest in GrowthAgent OS. We will review your information and reach out within 1 business day to schedule your personalised walkthrough.
           </p>
+          <Button variant="outline" asChild>
+            <Link href="/demo">Explore the live demo while you wait <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+          </Button>
         </div>
       </div>
     )
@@ -43,11 +47,17 @@ export default function DemoPage() {
       <div className="container max-w-2xl mx-auto">
         <div className="text-center mb-10">
           <Badge className="mb-4 border-blue-500/30 bg-blue-500/10 text-blue-400">
-            <Calendar className="h-3.5 w-3.5 mr-1.5" /> Book a Demo
+            <Calendar className="h-3.5 w-3.5 mr-1.5" /> Book a Walkthrough
           </Badge>
-          <h1 className="text-4xl font-bold mb-3">See GrowthAgent OS in action</h1>
+          <h1 className="text-4xl font-bold mb-3">See your AI employee before you hire it</h1>
           <p className="text-slate-400">
-            Tell us about your business and we will show you exactly how the agents would work for your lead flow.
+            Tell us about your business and we will show you exactly how your AI employee would handle your lead flow.
+          </p>
+          <p className="text-sm text-slate-500 mt-3">
+            Prefer to look around first?{" "}
+            <Link href="/demo" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1">
+              <Sparkles className="h-3.5 w-3.5" /> Try the live demo workspace
+            </Link>
           </p>
         </div>
 
@@ -116,7 +126,7 @@ export default function DemoPage() {
               {errors.painPoint && <p className="text-xs text-red-400">{errors.painPoint.message}</p>}
             </div>
             <Button type="submit" variant="gradient" className="w-full h-11" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Request My Demo"}
+              {isSubmitting ? "Submitting..." : "Request My Walkthrough"}
             </Button>
           </form>
         </div>

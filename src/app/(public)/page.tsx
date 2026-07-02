@@ -98,7 +98,7 @@ export default function HomePage() {
               </Button>
               <Button variant="outline" size="lg" asChild className="w-full sm:w-auto h-12 px-8 text-base">
                 <Link href="/demo">
-                  See How It Works <ChevronRight className="ml-1 h-4 w-4" />
+                  Try the Live Demo <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -441,7 +441,7 @@ export default function HomePage() {
               <Link href="/signup">Hire Your AI Employee <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             <Button variant="outline" size="lg" asChild className="h-12 px-8">
-              <Link href="/demo">Book a Demo</Link>
+              <Link href="/demo">Try the Live Demo</Link>
             </Button>
           </div>
         </div>
