@@ -139,7 +139,7 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Button variant={plan.highlight ? "gradient" : "outline"} asChild className="w-full">
-                <Link href="/demo">
+                <Link href="/book-demo">
                   Get Started <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -176,12 +176,17 @@ export default function PricingPage() {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <p className="text-slate-400 mb-6">Not sure which AI employee is right for you? Book a 20-minute consultation.</p>
-          <Button variant="gradient" size="lg" asChild>
-            <Link href="/demo">
-              <Zap className="mr-2 h-4 w-4" /> Book a Free Demo
-            </Link>
-          </Button>
+          <p className="text-slate-400 mb-6">Not sure which AI employee is right for you? Book a 20-minute consultation — or try the live demo first.</p>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Button variant="gradient" size="lg" asChild>
+              <Link href="/book-demo">
+                <Zap className="mr-2 h-4 w-4" /> Book a Free Walkthrough
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link href="/demo">Try the Live Demo</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

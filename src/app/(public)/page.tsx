@@ -13,7 +13,7 @@ const features = [
   { icon: MessageSquare, title: "Draft Replies", desc: "Personalised draft emails crafted in your tone of voice, ready for your one-click approval." },
   { icon: Phone, title: "Call Prep Briefs", desc: "Full sales-call briefs prepared before every discovery call — pain points, company context, talking points." },
   { icon: Clock, title: "Follow-Up Agent", desc: "Never miss a follow-up again. The agent tracks every lead and surfaces who needs attention today." },
-  { icon: LayoutDashboard, title: "Private CRM", desc: "All lead intelligence lives in a private CRM built around your sales flow, not a generic database." },
+  { icon: LayoutDashboard, title: "Your Review Hub (CRM)", desc: "Everything your AI employee prepares lands in your private CRM — check in anytime, approve from anywhere." },
 ]
 
 const workflow = [
@@ -26,14 +26,14 @@ const workflow = [
 ]
 
 const agentModules = [
-  { name: "Lead Research Agent", desc: "Deep-dives every new lead", badge: "Active" },
-  { name: "Lead Scoring Engine", desc: "Qualifies against your ICP", badge: "Active" },
-  { name: "Reply Drafter", desc: "Personalised outreach in your voice", badge: "Active" },
-  { name: "Follow-Up Agent", desc: "Tracks and reminds on every deal", badge: "Pipeline+" },
-  { name: "Call Prep Agent", desc: "Pre-call briefs in 60 seconds", badge: "Pipeline+" },
-  { name: "Proposal Agent", desc: "Draft proposals from call notes", badge: "Growth OS" },
-  { name: "Competitor Monitor", desc: "Tracks competitor signals per lead", badge: "Growth OS" },
-  { name: "Voice Agent", desc: "Inbound voice with AI qualification", badge: "Growth OS" },
+  { name: "Lead Research Agent", desc: "Deep-dives every new lead", badge: "All plans" },
+  { name: "Lead Scoring Engine", desc: "Qualifies against your ICP", badge: "All plans" },
+  { name: "Reply Drafter", desc: "Personalised outreach in your voice", badge: "All plans" },
+  { name: "Follow-Up Agent", desc: "Tracks and reminds on every deal", badge: "Sales Team" },
+  { name: "Call Prep Agent", desc: "Pre-call briefs in 60 seconds", badge: "Sales Team" },
+  { name: "Proposal Agent", desc: "Draft proposals from call notes", badge: "Revenue OS" },
+  { name: "Competitor Monitor", desc: "Tracks competitor signals per lead", badge: "Revenue OS" },
+  { name: "Voice Agent", desc: "Inbound voice with AI qualification", badge: "Revenue OS" },
 ]
 
 const faqs = [
@@ -74,7 +74,7 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 text-sm px-4 py-1.5 border-blue-500/30 bg-blue-500/10 text-blue-400">
               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-              AI operations for digital businesses
+              Fully managed AI employees for digital businesses
             </Badge>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
@@ -93,12 +93,12 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="gradient" size="lg" asChild className="w-full sm:w-auto h-12 px-8 text-base">
                 <Link href="/signup">
-                  Get Your Lead Agent <ArrowRight className="ml-2 h-4 w-4" />
+                  Hire Your AI Employee <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild className="w-full sm:w-auto h-12 px-8 text-base">
                 <Link href="/demo">
-                  See How It Works <ChevronRight className="ml-1 h-4 w-4" />
+                  Try the Live Demo <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -166,14 +166,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* The Shift */}
+      {/* The maths */}
       <section className="py-24">
         <div className="container max-w-4xl mx-auto text-center">
-          <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">The Shift</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">The future of digital business operations</h2>
-          <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-            Basic AI tools wait for prompts. <span className="text-white font-medium">GrowthAgent OS works inside your revenue flow.</span> It turns enquiries into structured opportunities, keeps your CRM alive, prepares your next move and lets you approve anything before it goes out.
+          <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">Do the Maths</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">An employee&apos;s output. A subscription&apos;s price.</h2>
+          <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto mb-10">
+            A junior sales hire costs $3,000–$5,000 a month, needs training, takes holidays and still lets leads slip.
+            Your AI employee does the qualifying, drafting and follow-up work around the clock — and we build,
+            monitor and fine-tune it for you every month.
           </p>
+          <div className="grid md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto">
+            {[
+              { stat: "$3k–$5k/mo", label: "Typical junior sales hire", accent: "text-slate-500" },
+              { stat: "From $497/mo", label: "Your AI employee, fully managed", accent: "gradient-text" },
+              { stat: "24/7", label: "Works every lead the minute it arrives", accent: "text-emerald-400" },
+            ].map((s) => (
+              <div key={s.label} className="glass-card rounded-xl p-6 text-center">
+                <div className={`text-2xl font-bold mb-1 ${s.accent}`}>{s.stat}</div>
+                <div className="text-xs text-slate-400">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -224,7 +238,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <Badge className="mb-4">How It Works</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">From enquiry to opportunity in minutes</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">The full lead-to-sale workflow, handled by your AI operator — with you in control at every step.</p>
+            <p className="text-slate-400 max-w-2xl mx-auto">The full lead-to-sale workflow, handled by your AI employee — with you in control at every step.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {workflow.map((step) => (
@@ -297,8 +311,8 @@ export default function HomePage() {
                     <Bot className="h-4 w-4 text-violet-400" />
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    m.badge === "Active" ? "bg-emerald-500/20 text-emerald-400" :
-                    m.badge === "Pipeline+" ? "bg-blue-500/20 text-blue-400" :
+                    m.badge === "All plans" ? "bg-emerald-500/20 text-emerald-400" :
+                    m.badge === "Sales Team" ? "bg-blue-500/20 text-blue-400" :
                     "bg-violet-500/20 text-violet-400"
                   }`}>{m.badge}</span>
                 </div>
@@ -418,16 +432,16 @@ export default function HomePage() {
           <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">
             <Zap className="h-3.5 w-3.5 mr-1.5" /> Get started today
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to turn enquiries into opportunities?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to hire your first AI employee?</h2>
           <p className="text-lg text-slate-400 mb-8">
-            Join digital businesses using GrowthAgent OS to qualify leads, draft replies and keep their pipeline moving — without adding headcount.
+            We build it around your business, monitor it every month, and send all its work to your private CRM for approval. You stay in control — it does the graft.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="gradient" size="lg" asChild className="h-12 px-8">
-              <Link href="/signup">Get Your Lead Agent <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/signup">Hire Your AI Employee <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             <Button variant="outline" size="lg" asChild className="h-12 px-8">
-              <Link href="/demo">Book a Demo</Link>
+              <Link href="/demo">Try the Live Demo</Link>
             </Button>
           </div>
         </div>

@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { signUpSchema } from "@/lib/validations";
 import { isAdminEmail } from "@/lib/env";
 import { z } from "zod";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function signUp(data: z.infer<typeof signUpSchema>) {
   const validated = signUpSchema.safeParse(data);
@@ -34,7 +36,7 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
   return { success: true, userId: user.id };
 }
 
-export async function saveOnboarding(userId: string, data: {
+export async function saveOnboarding(data: {
   businessName: string;
   website?: string;
   businessType: string;
@@ -48,6 +50,10 @@ export async function saveOnboarding(userId: string, data: {
   approvalPreference?: string;
   leadScoringPriorities?: string;
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "Not authenticated" };
+  const userId = session.user.id;
+
   const existingMembership = await prisma.companyMember.findFirst({
     where: { userId },
   });
