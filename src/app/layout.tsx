@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | GrowthAgent OS",
   },
   description:
-    "AI agents that turn enquiries into qualified sales opportunities. GrowthAgent OS gives your digital business a private AI sales operator.",
+    "Hire a fully managed AI employee that researches, scores and replies to every lead — from $497/month with a monthly lead allowance. You approve the work; it does the graft.",
   keywords: ["AI agents", "sales automation", "lead management", "CRM", "SaaS"],
 }
 

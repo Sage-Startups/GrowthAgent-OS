@@ -55,6 +55,10 @@ const faqs = [
     a: "Everything lands in your private CRM — your single review hub. Every lead, score, draft, and follow-up the AI prepares is there for you to review anytime, from any device."
   },
   {
+    q: "How does the lead allowance work?",
+    a: "Every plan includes a monthly lead allowance (200, 500 or 1,500 leads). One lead means we research it, score it, and draft every reply and follow-up for it — one number, no hidden meters. We notify you at 80%, you can top up with +100 leads for $49, and we never auto-bill overages."
+  },
+  {
     q: "How quickly can I get started?",
     a: "Most clients are live within 5–7 business days. The full journey is laid out step-by-step in the section above — your total time investment is about an hour, and we handle the rest."
   },
@@ -230,14 +234,14 @@ export default function HomePage() {
           <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">Do the Maths</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-6">An employee&apos;s output. A subscription&apos;s price.</h2>
           <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto mb-10">
-            A junior sales hire costs $3,000–$5,000 a month, needs training, takes holidays and still lets leads slip.
-            Your AI employee does the qualifying, drafting and follow-up work around the clock — and we build,
-            monitor and fine-tune it for you every month.
+            A sales hire costs $4,000–$6,000 a month, takes three months to onboard, and carries all the
+            employment risk. Your AI employee does the qualifying, drafting and follow-up work around the
+            clock — and we build, monitor and fine-tune it for you every month.
           </p>
           <div className="grid md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto">
             {[
-              { stat: "$3k–$5k/mo", label: "Typical junior sales hire", accent: "text-slate-500" },
-              { stat: "From $497/mo", label: "Your AI employee, fully managed", accent: "gradient-text" },
+              { stat: "$4k–$6k/mo", label: "Typical sales hire, plus onboarding time and employment risk", accent: "text-slate-500" },
+              { stat: "From $497/mo", label: "Your AI employee, fully managed, cancel anytime", accent: "gradient-text" },
               { stat: "24/7", label: "Works every lead the minute it arrives", accent: "text-emerald-400" },
             ].map((s) => (
               <div key={s.label} className="glass-card rounded-xl p-6 text-center">
@@ -419,21 +423,31 @@ export default function HomePage() {
           <Badge className="mb-6">Simple Pricing</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Hire your first AI employee</h2>
           <p className="text-slate-400 mb-10">A fraction of the cost of a sales hire. We build it, you approve the work.</p>
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
             {[
-              { name: "AI Sales Assistant", setup: "$500", monthly: "$497", desc: "1 AI agent + private CRM review hub", highlight: false },
-              { name: "AI Sales Team", setup: "$1,000", monthly: "$997", desc: "3 AI agents working your pipeline", highlight: true },
-              { name: "Full AI Revenue OS", setup: "$1,500", monthly: "$1,997", desc: "A complete AI sales department", highlight: false },
+              { name: "AI Sales Assistant", setup: "$997", monthly: "$497", allowance: "200 leads/mo included", desc: "1 AI employee: research, scoring, reply drafting", highlight: false },
+              { name: "AI Sales Team", setup: "$1,997", monthly: "$997", allowance: "500 leads/mo included", desc: "3 AI employees: adds follow-ups + call-prep briefs", highlight: true },
+              { name: "Full AI Revenue OS", setup: "$2,997", monthly: "$1,997", allowance: "1,500 leads/mo included", desc: "Full agent suite: adds proposals + competitor monitoring", highlight: false },
             ].map((p) => (
               <div key={p.name} className={`rounded-xl p-6 border transition-all ${p.highlight ? "border-blue-500/50 bg-blue-600/10 glow-blue" : "border-slate-700/50 bg-slate-900/60"}`}>
                 {p.highlight && <Badge className="mb-3 border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs">Most Popular</Badge>}
                 <div className="text-sm font-semibold text-slate-400 mb-1">{p.name}</div>
                 <div className="text-3xl font-bold mb-0.5">{p.monthly}<span className="text-lg text-slate-400">/mo</span></div>
                 <div className="text-xs text-slate-500 mb-3">+ {p.setup} setup &amp; build</div>
+                <div className={`text-xs font-medium rounded-md px-2.5 py-1.5 mb-3 inline-block ${p.highlight ? "bg-blue-600/15 text-blue-300 border border-blue-500/30" : "bg-slate-800/60 text-slate-300 border border-slate-700/50"}`}>
+                  {p.allowance}
+                </div>
                 <p className="text-xs text-slate-400">{p.desc}</p>
               </div>
             ))}
           </div>
+          <p className="text-sm text-slate-500 max-w-2xl mx-auto mb-2">
+            One lead = researched, scored, replied and followed up — one number, no hidden meters.
+            Need more? +100 leads for $49, prepaid, never auto-billed.
+          </p>
+          <p className="text-xs text-slate-500 mb-8">
+            Month-to-month · Cancel anytime · Pay annually, get 2 months free · 30-Day Setup Guarantee
+          </p>
           <Button variant="gradient" asChild>
             <Link href="/pricing">View Full Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link>
           </Button>
