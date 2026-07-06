@@ -91,7 +91,7 @@ export type PlanLimits = {
 
 const STARTER_LIMITS: PlanLimits = {
   monthlyCreditLimit: 500,
-  maxLeadsPerMonth: 250,
+  maxLeadsPerMonth: 200,
   maxRepliesPerMonth: 100,
   maxCallBriefsPerMonth: 25,
   maxVoiceMinutesPerMonth: 30,
@@ -104,7 +104,7 @@ const STARTER_LIMITS: PlanLimits = {
 
 const PIPELINE_LIMITS: PlanLimits = {
   monthlyCreditLimit: 1500,
-  maxLeadsPerMonth: 1000,
+  maxLeadsPerMonth: 500,
   maxRepliesPerMonth: 400,
   maxCallBriefsPerMonth: 100,
   maxVoiceMinutesPerMonth: 100,
@@ -117,7 +117,7 @@ const PIPELINE_LIMITS: PlanLimits = {
 
 const GROWTH_LIMITS: PlanLimits = {
   monthlyCreditLimit: 5000,
-  maxLeadsPerMonth: 3000,
+  maxLeadsPerMonth: 1500,
   maxRepliesPerMonth: 1000,
   maxCallBriefsPerMonth: 300,
   maxVoiceMinutesPerMonth: 300,
@@ -161,9 +161,9 @@ export type PlanDisplay = {
 }
 
 const PLAN_DISPLAYS: { starter: PlanDisplay; pipeline: PlanDisplay; growth: PlanDisplay } = {
-  starter: { label: "AI Sales Assistant", shortLabel: "Assistant", monthlyPrice: 497, setupFee: 500 },
-  pipeline: { label: "AI Sales Team", shortLabel: "Sales Team", monthlyPrice: 997, setupFee: 1000 },
-  growth: { label: "Full AI Revenue OS", shortLabel: "Revenue OS", monthlyPrice: 1997, setupFee: 1500 },
+  starter: { label: "AI Sales Assistant", shortLabel: "Assistant", monthlyPrice: 497, setupFee: 997 },
+  pipeline: { label: "AI Sales Team", shortLabel: "Sales Team", monthlyPrice: 997, setupFee: 1997 },
+  growth: { label: "Full AI Revenue OS", shortLabel: "Revenue OS", monthlyPrice: 1997, setupFee: 2997 },
 }
 
 // Resolves any plan name (current, alias, or legacy) to its display info

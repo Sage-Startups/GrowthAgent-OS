@@ -3,57 +3,68 @@
 ## Positioning
 
 GrowthAgent OS is sold as an **AI employee**, not a software tool. The comparison
-point is a sales hire ($3,000–$5,000/mo), not a SaaS subscription. We build and
-configure each client's AI agents, then monitor and tune them every month — so
-pricing reflects a managed service, not self-serve software.
+point is a sales hire ($4,000–$6,000/mo, plus onboarding time and employment risk),
+not a SaaS subscription. We build and configure each client's AI agents, then
+monitor and tune them every month — so pricing reflects a managed service, not
+self-serve software.
 
 Every plan includes the private **CRM review hub** where the AI employee sends all
 its work (scored leads, draft replies, follow-ups), and the client approves actions
 from the dashboard, their phone, or email.
 
+## The Lead Allowance
+
+Every plan includes a **monthly lead allowance**. Always frame it as a "lead
+allowance" in customer-facing copy — never "credits" or "tokens".
+
+- **1 lead = one complete cycle**: research + ICP scoring + drafted reply + all
+  follow-ups for that lead. One number, no hidden meters.
+- **Overage**: prepaid top-up packs — **+100 leads for $49**, one tap from the
+  dashboard. We never auto-bill overages.
+- We notify the client at **80%** of their allowance.
+- Unused leads **do not roll over**; the allowance resets each billing cycle.
+- Clients can change tiers anytime (effective next cycle).
+
 ## Plans
 
-### AI Sales Assistant — $497/mo + $500 setup & build
+All plans are **month-to-month, cancel anytime**. Pay annually, get 2 months free.
 
-Your first AI employee. One dedicated agent, private CRM review hub.
+### AI Sales Assistant — $497/mo + $997 setup & build
+
+Your first AI employee. **200 leads included per month.**
 
 Features:
-- 1 dedicated AI agent
-- Reviews & scores every lead (Hot / Warm / Cold / Bad Fit)
-- Researches each prospect
-- Drafts replies in your tone
-- Follow-up reminders
-- Private CRM — your review hub
-- Approve actions by phone or email
-- We build & configure your agent
-- Ongoing monitoring & tuning
+- 1 AI employee: lead research, ICP scoring (1–100), reply drafting
+- Approval queue dashboard — nothing sends without sign-off
+- Email + web form lead capture
+- Monthly tune-up (scoring accuracy review + prompt updates)
+- Email support
 
-### AI Sales Team — $997/mo + $1,000 setup & build
+### AI Sales Team — $997/mo + $1,997 setup & build
 
-Three AI employees working your pipeline. **Most popular.**
+Three AI employees working the pipeline. **Most popular.**
+**500 leads included per month.**
 
 Includes everything in Assistant, plus:
-- 3 dedicated AI agents
-- Follow-up agent (overdue tracking)
-- Sales-call prep agent (pre-call briefs)
-- Custom scoring rules for your business
-- CRM auto-updates from every agent
-- Weekly check-in & optimisation
-- Priority support
-
-### Full AI Revenue OS — $1,997/mo + $1,500 setup & build
-
-A complete AI sales department for scaling businesses.
-
-Includes everything in Sales Team, plus:
-- Full agent suite
-- Proposal preparation agent
-- Competitor monitoring agent
-- Client onboarding agent
-- Voice agent (AI calls)
+- 3 AI employees — adds follow-up sequencing and call-prep briefs
+- Priority support (same business day)
 - Monthly performance report
-- Custom integrations
-- Dedicated account manager
+- Custom voice calibration refreshes
+
+### Full AI Revenue OS — $1,997/mo + $2,997 setup & build
+
+A complete AI sales department. **1,500 leads included per month.**
+
+Includes everything in Team, plus:
+- Full agent suite — adds proposal drafting and competitor monitoring
+- Quarterly strategy call
+- Dedicated Slack/WhatsApp support channel
+
+## Guarantee
+
+**30-Day Setup Guarantee** — if the client's AI employee hasn't researched, scored,
+and drafted a reply for every lead in their pipeline within 30 days, we refund the
+setup fee. Display this near the pricing CTA.
 
 ## Plan Feature Gating
 
@@ -64,6 +75,10 @@ To add a new gated feature:
 2. Add it to the appropriate plan constant in `plans.ts`
 3. Wrap the UI component with `hasFeature()` check
 4. Show `<UpgradeCard>` for locked features
+
+Plan prices and lead allowances used by the app live in `getPlanDisplay()` and
+`PLAN_LIMITS` (`maxLeadsPerMonth`) in the same file — keep them in sync with this
+document and the marketing site.
 
 ## Setup & Build Fees
 

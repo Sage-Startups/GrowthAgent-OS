@@ -103,7 +103,7 @@ export const demoLeads: DemoLead[] = [
     status: "Follow-up scheduled",
     lastActivity: "Yesterday",
     research:
-      "DTC homeware brand, ~£2m revenue. Referred by an existing client. Growth lead has budget authority for agencies but mentioned they're 'comparing two other options'.",
+      "DTC homeware brand, ~$2m revenue. Referred by an existing client. Growth lead has budget authority for agencies but mentioned they're 'comparing two other options'.",
     painPoints: "Paid social costs rising; email revenue flat for 6 months.",
     scoringReason:
       "Good fit but active comparison shopping and mid-size budget. Scored 74 — WARM. Follow-up cadence set to 2 days.",
@@ -122,7 +122,7 @@ export const demoLeads: DemoLead[] = [
     status: "Nurture sequence",
     lastActivity: "2 days ago",
     research:
-      "Single-location gym owner exploring 'marketing help'. Small budget indicated on the enquiry form (<£500/mo).",
+      "Single-location gym owner exploring 'marketing help'. Small budget indicated on the enquiry form (<$500/mo).",
     painPoints: "Wants more members but no defined offer or budget.",
     scoringReason:
       "Below ICP budget threshold and B2C local — outside best-fit profile. Scored 41 — COLD. Placed in monthly nurture, no manual effort spent.",
