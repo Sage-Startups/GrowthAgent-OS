@@ -31,6 +31,10 @@ const GROWTH_FEATURES: PlanFeature[] = [
 // legacy names so older subscriptions still resolve correctly.
 export const PLAN_FEATURES: Record<string, PlanFeature[]> = {
   // Current plans
+  "solo": STARTER_FEATURES,
+  "team": PIPELINE_FEATURES,
+  "workforce": GROWTH_FEATURES,
+  // Previous plans
   "ai sales assistant": STARTER_FEATURES,
   "ai sales team": PIPELINE_FEATURES,
   "full ai revenue os": GROWTH_FEATURES,
@@ -58,7 +62,7 @@ export function getPlanName(company: CompanyLike): string {
 function resolveFeatures(planName: string): PlanFeature[] {
   const name = planName.toLowerCase()
   if (PLAN_FEATURES[name]) return PLAN_FEATURES[name]
-  if (name.includes("revenue os") || name.includes("growth")) return GROWTH_FEATURES
+  if (name.includes("workforce") || name.includes("revenue os") || name.includes("growth")) return GROWTH_FEATURES
   if (name.includes("team") || name.includes("pipeline")) return PIPELINE_FEATURES
   return STARTER_FEATURES
 }
@@ -130,6 +134,10 @@ const GROWTH_LIMITS: PlanLimits = {
 
 export const PLAN_LIMITS: Record<string, PlanLimits> = {
   // Current plans
+  solo: STARTER_LIMITS,
+  team: PIPELINE_LIMITS,
+  workforce: GROWTH_LIMITS,
+  // Previous plans
   "ai sales assistant": STARTER_LIMITS,
   "ai sales team": PIPELINE_LIMITS,
   "full ai revenue os": GROWTH_LIMITS,
@@ -146,7 +154,7 @@ export const PLAN_LIMITS: Record<string, PlanLimits> = {
 export function getPlanLimits(planName: string): PlanLimits {
   const key = planName.toLowerCase()
   if (PLAN_LIMITS[key]) return PLAN_LIMITS[key]
-  if (key.includes("revenue os") || key.includes("growth")) return GROWTH_LIMITS
+  if (key.includes("workforce") || key.includes("revenue os") || key.includes("growth")) return GROWTH_LIMITS
   if (key.includes("team") || key.includes("pipeline")) return PIPELINE_LIMITS
   return STARTER_LIMITS
 }
@@ -161,15 +169,15 @@ export type PlanDisplay = {
 }
 
 const PLAN_DISPLAYS: { starter: PlanDisplay; pipeline: PlanDisplay; growth: PlanDisplay } = {
-  starter: { label: "AI Sales Assistant", shortLabel: "Assistant", monthlyPrice: 497, setupFee: 997 },
-  pipeline: { label: "AI Sales Team", shortLabel: "Sales Team", monthlyPrice: 997, setupFee: 1997 },
-  growth: { label: "Full AI Revenue OS", shortLabel: "Revenue OS", monthlyPrice: 1997, setupFee: 2997 },
+  starter: { label: "Solo", shortLabel: "Solo", monthlyPrice: 499, setupFee: 997 },
+  pipeline: { label: "Team", shortLabel: "Team", monthlyPrice: 1199, setupFee: 1997 },
+  growth: { label: "Workforce", shortLabel: "Workforce", monthlyPrice: 1799, setupFee: 2997 },
 }
 
 // Resolves any plan name (current, alias, or legacy) to its display info
 export function getPlanDisplay(planName: string | null | undefined): PlanDisplay {
   const key = (planName ?? "starter").toLowerCase()
-  if (key.includes("revenue os") || key.includes("growth")) return PLAN_DISPLAYS.growth
+  if (key.includes("workforce") || key.includes("revenue os") || key.includes("growth")) return PLAN_DISPLAYS.growth
   if (key.includes("team") || key.includes("pipeline")) return PLAN_DISPLAYS.pipeline
   return PLAN_DISPLAYS.starter
 }

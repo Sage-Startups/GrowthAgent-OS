@@ -46,7 +46,7 @@ export default function SignUpPage() {
           <Bot className="h-6 w-6 text-white" />
         </div>
         <h1 className="text-2xl font-bold">Create your account</h1>
-        <p className="text-sm text-slate-400 mt-1">Start your GrowthAgent OS journey</p>
+        <p className="text-sm text-slate-400 mt-1">Start building your Staffgent AI team</p>
       </div>
 
       {error && (

@@ -5,7 +5,7 @@ import { DemoSidebar } from "@/components/demo/demo-sidebar"
 import { Sparkles, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Live Demo — GrowthAgent OS",
+  title: "Live Demo",
   description: "Explore a sample workspace and see what it's like to own an AI employee.",
 }
 
@@ -31,7 +31,7 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
             </Button>
             <Button variant="gradient" size="sm" className="h-8 text-xs" asChild>
               <Link href="/signup">
-                Hire Your AI Employee <ArrowRight className="ml-1 h-3 w-3" />
+                Build Your AI Team <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </Button>
           </div>

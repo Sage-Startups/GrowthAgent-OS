@@ -32,7 +32,7 @@ export default function DemoOverviewPage() {
           <p className="text-slate-400 mt-1">Here&apos;s what {demoCompany.employeeName} has been working on for you.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs text-slate-400">Sales Team</Badge>
+          <Badge variant="outline" className="text-xs text-slate-400">Team plan</Badge>
           <Badge className="border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs">
             <Bell className="h-3 w-3 mr-1" /> 3 approvals
           </Badge>
@@ -51,7 +51,7 @@ export default function DemoOverviewPage() {
             </div>
             <div className="flex-1 min-w-[200px]">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold">{demoCompany.employeeName} — Your AI Employee</span>
+                <span className="text-sm font-semibold">{demoCompany.employeeName} — AI Sales Employee</span>
                 <Badge variant="outline" className="text-xs text-slate-300">On the job</Badge>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -239,7 +239,7 @@ export default function DemoOverviewPage() {
                 We build your own {demoCompany.employeeName} around your leads, your tone, and your ideal customer — live in 5–7 days.
               </p>
               <Button variant="gradient" size="sm" className="w-full" asChild>
-                <Link href="/signup">Hire Your AI Employee <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Link>
+                <Link href="/signup">Build Your AI Team <ArrowRight className="ml-1.5 h-3.5 w-3.5" /></Link>
               </Button>
             </CardContent>
           </Card>

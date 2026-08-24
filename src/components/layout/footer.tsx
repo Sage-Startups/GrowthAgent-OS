@@ -11,10 +11,10 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600">
                 <Bot className="h-4 w-4 text-white" />
               </div>
-              <span className="text-lg font-bold">GrowthAgent OS</span>
+              <span className="text-lg font-bold">Staff<span className="gradient-text">gent</span></span>
             </Link>
             <p className="text-sm text-slate-400 max-w-xs">
-              AI agents that turn enquiries into qualified sales opportunities. Built for digital businesses serious about revenue.
+              Specialised AI employees for sales, marketing, branding, operations and finance — configured around the way your business works.
             </p>
           </div>
           <div>
@@ -23,7 +23,7 @@ export function Footer() {
               <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link href="/demo" className="hover:text-white transition-colors">Live Demo</Link></li>
               <li><Link href="/book-demo" className="hover:text-white transition-colors">Book a Walkthrough</Link></li>
-              <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
+              <li><Link href="/#employees" className="hover:text-white transition-colors">Employees</Link></li>
             </ul>
           </div>
           <div>
@@ -35,8 +35,8 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500">© {new Date().getFullYear()} GrowthAgent OS. All rights reserved.</p>
-          <p className="text-xs text-slate-500">Premium AI operations for digital businesses.</p>
+          <p className="text-xs text-slate-500">© {new Date().getFullYear()} Staffgent. All rights reserved.</p>
+          <p className="text-xs text-slate-500">Hire your AI workforce.</p>
         </div>
       </div>
     </footer>

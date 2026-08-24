@@ -2,65 +2,95 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  ArrowRight, Bot, Brain, CheckCircle, ChevronRight, Clock, FileText,
-  Globe, LayoutDashboard, Lock, MessageSquare, Phone, Search, Shield,
-  Sparkles, Star, TrendingUp, Users, Zap, CreditCard, ClipboardList,
-  Wrench, Rocket
+  ArrowRight, Bot, Brain, CheckCircle, ChevronRight, Clock,
+  LayoutDashboard, Lock, Shield,
+  Sparkles, TrendingUp, Zap, CreditCard, ClipboardList,
+  Wrench, Rocket, Phone, FileText
 } from "lucide-react"
 
-const features = [
-  { icon: Search, title: "Lead Research", desc: "Automatically research every new lead's company, website, and digital footprint within minutes of capture." },
-  { icon: Star, title: "Lead Scoring", desc: "AI scores every lead as Hot, Warm, Cold, or Bad Fit based on your ideal customer profile." },
-  { icon: MessageSquare, title: "Draft Replies", desc: "Personalised draft emails crafted in your tone of voice, ready for your one-click approval." },
-  { icon: Phone, title: "Call Prep Briefs", desc: "Full sales-call briefs prepared before every discovery call — pain points, company context, talking points." },
-  { icon: Clock, title: "Follow-Up Agent", desc: "Never miss a follow-up again. The agent tracks every lead and surfaces who needs attention today." },
-  { icon: LayoutDashboard, title: "Your Review Hub (CRM)", desc: "Everything your AI employee prepares lands in your private CRM — check in anytime, approve from anywhere." },
+const benefits = [
+  { icon: Zap, title: "More capacity", desc: "Give repetitive work to your AI team and expand what your business can get done." },
+  { icon: ClipboardList, title: "Consistent execution", desc: "Employees work to defined instructions and schedules — the same standard, every time." },
+  { icon: Brain, title: "Built around your business", desc: "Every employee receives a customised Employee Brain: your services, customers, tone and rules." },
+  { icon: Shield, title: "Human control", desc: "Employees research, prepare and draft — important actions remain yours to approve." },
+  { icon: LayoutDashboard, title: "One workforce", desc: "Manage your specialised AI employees from one Staffgent environment." },
+  { icon: TrendingUp, title: "Grow gradually", desc: "Start with one employee. Add others when the business is ready — not before." },
 ]
 
 const workflow = [
-  { step: "01", title: "Lead Arrives", desc: "A new enquiry hits your form, email or integration source." },
-  { step: "02", title: "Agent Researches", desc: "The AI researches their company, website, team size and signals." },
-  { step: "03", title: "Lead Scored", desc: "Scored Hot, Warm, Cold or Bad Fit against your criteria." },
-  { step: "04", title: "Draft Prepared", desc: "A personalised reply drafted in your brand voice, awaiting approval." },
-  { step: "05", title: "You Approve", desc: "One click to approve, edit, or reject — you stay in control." },
-  { step: "06", title: "Pipeline Updated", desc: "CRM updated, follow-up scheduled, briefing ready if you book a call." },
+  { step: "01", title: "Choose Your Employee", desc: "Select the role your business needs most — Sales, Marketing, Branding, Operations or Finance." },
+  { step: "02", title: "Business Kickoff", desc: "A structured kickoff captures what you do, who you serve, your tone, rules and priorities." },
+  { step: "03", title: "Employee Brain Built", desc: "Your employee doesn't start with a generic prompt — their Employee Brain is configured around the way your business actually works." },
+  { step: "04", title: "They Start Working", desc: "Your employee begins completing their assigned and scheduled work." },
+  { step: "05", title: "You Review & Approve", desc: "Important work comes back to you. Review, give feedback, approve — from anywhere." },
+  { step: "06", title: "Grow Your Team", desc: "Start with one employee and add more roles as your business grows." },
 ]
 
-const agentModules = [
-  { name: "Lead Research Agent", desc: "Deep-dives every new lead", badge: "All plans" },
-  { name: "Lead Scoring Engine", desc: "Qualifies against your ICP", badge: "All plans" },
-  { name: "Reply Drafter", desc: "Personalised outreach in your voice", badge: "All plans" },
-  { name: "Follow-Up Agent", desc: "Tracks and reminds on every deal", badge: "Sales Team" },
-  { name: "Call Prep Agent", desc: "Pre-call briefs in 60 seconds", badge: "Sales Team" },
-  { name: "Proposal Agent", desc: "Draft proposals from call notes", badge: "Revenue OS" },
-  { name: "Competitor Monitor", desc: "Tracks competitor signals per lead", badge: "Revenue OS" },
-  { name: "Voice Agent", desc: "Inbound voice with AI qualification", badge: "Revenue OS" },
+const employees = [
+  {
+    name: "AI Sales Employee",
+    outcome: "Find more of the right customers.",
+    desc: "Researches potential customers, identifies relevant opportunities, finds decision-makers, evaluates buying signals, scores prospects and prepares personalised outreach for approval.",
+    caps: ["Prospect research", "Lead qualification", "Opportunity scoring", "Personalised outreach", "Human approval"],
+  },
+  {
+    name: "AI Marketing Employee",
+    outcome: "Keep your business visible and your marketing moving.",
+    desc: "Researches relevant topics, develops campaign ideas, creates content, prepares social posts and helps maintain a consistent marketing presence without the constant manual workload.",
+    caps: ["Content planning", "Social content", "Campaign ideas", "Marketing copy", "Content calendars"],
+  },
+  {
+    name: "AI Branding Employee",
+    outcome: "Keep everything your business produces consistently on-brand.",
+    desc: "Learns how your business should sound, look and position itself, then helps maintain consistency across messaging, campaigns, documents, sales material and customer-facing content.",
+    caps: ["Brand voice", "Messaging consistency", "Copy review", "Tone checking", "Brand guidelines"],
+  },
+  {
+    name: "AI Operations Employee",
+    outcome: "Take repetitive admin off your team's plate.",
+    desc: "Helps organise day-to-day work, summarise information, prepare responses, track outstanding actions, create reports and keep repetitive business administration moving.",
+    caps: ["Task management", "Action tracking", "Reporting", "Meeting summaries", "CRM updates"],
+  },
+  {
+    name: "AI Finance Assistant",
+    outcome: "Stay on top of financial admin without adding more paperwork.",
+    desc: "Supports repetitive financial administration such as overdue invoice monitoring, payment reminders, expense organisation and management summaries — while keeping important decisions under human control.",
+    caps: ["Invoice monitoring", "Payment reminders", "Expense summaries", "Management summaries", "Account alerts"],
+  },
 ]
 
 const faqs = [
   {
-    q: "Is this an AI chatbot?",
-    a: "No. Chatbots respond to prompts. GrowthAgent OS is an AI employee — it proactively works inside your revenue flow, researching leads, scoring them, and preparing actions, without you having to ask."
+    q: "What is a Staffgent AI Employee?",
+    a: "A specialised AI employee configured around a specific area of your business, with business knowledge, working instructions and defined responsibilities."
   },
   {
-    q: "How do I approve what the AI does?",
-    a: "Your AI employee sends everything it prepares — scored leads, draft replies, follow-ups — to your private CRM. You can review and approve right there, or confirm actions straight from your phone or email. Nothing goes out without your sign-off."
+    q: "Which employees can I hire?",
+    a: "Sales, Marketing, Branding, Operations and Finance Assistant. Start with the role your business needs most and add more as you grow."
   },
   {
-    q: "Do I have to set it up myself?",
-    a: "No. We build and configure your AI employee for your specific business during onboarding — your ideal customer, your tone, your scoring rules — then monitor and fine-tune it every month."
+    q: "Can I start with one employee?",
+    a: "Yes. Most businesses start with one employee and add more as they grow. Every plan can be upgraded at any time."
   },
   {
-    q: "Where do I see the AI's work?",
-    a: "Everything lands in your private CRM — your single review hub. Every lead, score, draft, and follow-up the AI prepares is there for you to review anytime, from any device."
+    q: "Is Staffgent fully autonomous?",
+    a: "Employees complete substantial work independently — research, drafts, reports, organisation — but important actions remain subject to your review and approval."
   },
   {
-    q: "How does the lead allowance work?",
-    a: "Every plan includes a monthly lead allowance (200, 500 or 1,500 leads). One lead means we research it, score it, and draft every reply and follow-up for it — one number, no hidden meters. We notify you at 80%, you can top up with +100 leads for $49, and we never auto-bill overages."
+    q: "How does Staffgent learn my business?",
+    a: "Each employee is configured through onboarding and a structured kickoff that creates their Employee Brain: your services, customers, priorities, tone, rules and working preferences."
+  },
+  {
+    q: "Is this just ChatGPT?",
+    a: "No. Staffgent employees are configured around specific business responsibilities, company knowledge, rules, schedules and approval processes — and they carry their work through, rather than answering one prompt at a time."
+  },
+  {
+    q: "How does the monthly work allowance function?",
+    a: "Every plan includes a monthly allowance of work credits that covers everything your employees do — research, drafts, reports, follow-ups. We notify you at 80%, you can top up with +250 credits for $49, and we never auto-bill overages."
   },
   {
     q: "How quickly can I get started?",
-    a: "Most clients are live within 5–7 business days. The full journey is laid out step-by-step in the section above — your total time investment is about an hour, and we handle the rest."
+    a: "Most businesses are live within 5–7 business days. The full journey is laid out step-by-step in the section above — your total time investment is about an hour, and we handle the rest."
   },
 ]
 
@@ -71,15 +101,15 @@ const onboardingSteps = [
     who: "You",
     time: "15 min",
     title: "Try the demo, then book a call",
-    desc: "Click around the live demo to see what owning an AI employee feels like. Then book a walkthrough — we look at your lead flow together and recommend the right plan. No pressure, no jargon.",
+    desc: "See a Staffgent workspace for yourself, then book a walkthrough — we talk through which employee role your business needs first. No pressure, no jargon.",
   },
   {
     icon: CreditCard,
     day: "Day 1",
     who: "You",
     time: "5 min",
-    title: "Hire your AI employee",
-    desc: "Pick your plan and pay the one-time setup fee. You get instant access to your private workspace while we start the build.",
+    title: "Hire your first employee",
+    desc: "Pick your plan and role, and pay the one-time setup fee. You get instant access to your workspace while we start the configuration.",
   },
   {
     icon: ClipboardList,
@@ -87,31 +117,31 @@ const onboardingSteps = [
     who: "You",
     time: "10 min",
     title: "Tell us about your business",
-    desc: "A guided setup wizard captures your ideal customer, your offer, your tone of voice and where your leads come from. That becomes your employee's job description.",
+    desc: "A guided setup captures what you do, who you serve, your tone and your rules — the start of your Employee Brain.",
   },
   {
     icon: Phone,
     day: "Day 2–3",
     who: "Together",
     time: "30 min",
-    title: "Kickoff call",
-    desc: "We go deeper than any form can. You show us a few real past leads — one you won, one you lost, one that wasted your time — and replies you actually liked. That's how we calibrate scoring and voice.",
+    title: "Business kickoff call",
+    desc: "We go deeper than any form can. Real examples from your business calibrate how your employee thinks, sounds and prioritises.",
   },
   {
     icon: Wrench,
     day: "Day 3–6",
     who: "We handle it",
     time: null,
-    title: "We build, train and test",
-    desc: "We configure your agents, run your real past leads through them, and send you sample outputs — scores, draft replies, a call brief — for your sign-off before anything goes live.",
+    title: "We configure, train and test",
+    desc: "Your employee's Brain is built and tested against real scenarios from your business. You sign off sample work before anything goes live.",
   },
   {
     icon: Rocket,
     day: "Day 5–7",
     who: "Together",
     time: "15 min",
-    title: "Go live",
-    desc: "We connect your lead sources and walk you through your workspace. From that moment your employee works every lead that arrives — and we keep monitoring and tuning it every month.",
+    title: "Your employee starts work",
+    desc: "A short handover of their workspace — then your employee begins their scheduled work, and we keep monitoring and tuning them every month.",
   },
 ]
 
@@ -136,37 +166,39 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 text-sm px-4 py-1.5 border-blue-500/30 bg-blue-500/10 text-blue-400">
               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-              Fully managed AI employees for digital businesses
+              The AI workforce platform for small and growing businesses
             </Badge>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
-              Hire an{" "}
-              <span className="gradient-text">AI employee</span>
-              <br />
-              that closes your leads.
+              Hire your{" "}
+              <span className="gradient-text">AI workforce</span>.
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-              For a fraction of the cost of a sales hire, your AI employee researches every new lead,
-              scores the opportunity, drafts replies, preps your calls and follows up — then sends it all
-              to your private CRM. You approve the work from your phone or email. Nothing happens without your say-so.
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed">
+              Build a team of specialised AI employees that work across your business — finding
+              opportunities, creating marketing, protecting your brand, handling repetitive operations
+              and keeping financial admin organised.
+            </p>
+            <p className="text-base text-slate-500 max-w-xl mx-auto mb-8 leading-relaxed">
+              Each employee is configured around your business, works to defined instructions,
+              and brings important decisions back to you for review.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="gradient" size="lg" asChild className="w-full sm:w-auto h-12 px-8 text-base">
                 <Link href="/signup">
-                  Hire Your AI Employee <ArrowRight className="ml-2 h-4 w-4" />
+                  Build Your AI Team <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild className="w-full sm:w-auto h-12 px-8 text-base">
-                <Link href="/demo">
-                  Try the Live Demo <ChevronRight className="ml-1 h-4 w-4" />
+                <Link href="#employees">
+                  Meet the Employees <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </div>
 
             <div className="mt-10 flex items-center justify-center gap-6 text-sm text-slate-400">
-              {["Setup in 5 days", "Approval-first AI", "Private to your business"].map((item) => (
+              {["Start with one employee", "You approve the decisions that matter", "Private to your business"].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
                   <CheckCircle className="h-4 w-4 text-emerald-400" /> {item}
                 </span>
@@ -176,6 +208,9 @@ export default function HomePage() {
 
           {/* Dashboard preview mockup */}
           <div className="mt-16 max-w-5xl mx-auto">
+            <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+              A look inside the Sales Employee workspace
+            </p>
             <div className="rounded-2xl border border-slate-700/60 bg-slate-900/80 backdrop-blur-md shadow-2xl shadow-blue-500/5 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950/50">
                 <div className="flex gap-1.5">
@@ -183,16 +218,16 @@ export default function HomePage() {
                   <span className="h-3 w-3 rounded-full bg-yellow-500/70" />
                   <span className="h-3 w-3 rounded-full bg-green-500/70" />
                 </div>
-                <span className="text-xs text-slate-500 mx-auto">GrowthAgent OS — Dashboard</span>
+                <span className="text-xs text-slate-500 mx-auto">Staffgent — Sales Employee workspace</span>
               </div>
               <div className="p-6 bg-[hsl(222_47%_7%)]">
                 {/* Mock stats row */}
                 <div className="grid grid-cols-4 gap-3 mb-6">
                   {[
-                    { label: "Total Leads", value: "47", color: "text-blue-400" },
-                    { label: "Hot Leads", value: "8", color: "text-red-400" },
-                    { label: "Pipeline Value", value: "$84k", color: "text-emerald-400" },
-                    { label: "Approvals Due", value: "3", color: "text-yellow-400" },
+                    { label: "Prospects researched", value: "47", color: "text-blue-400" },
+                    { label: "Hot opportunities", value: "8", color: "text-red-400" },
+                    { label: "Pipeline value", value: "$84k", color: "text-emerald-400" },
+                    { label: "Awaiting your review", value: "3", color: "text-yellow-400" },
                   ].map((s) => (
                     <div key={s.label} className="rounded-lg bg-slate-800/60 border border-slate-700/50 p-3">
                       <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
@@ -203,9 +238,9 @@ export default function HomePage() {
                 {/* Mock lead rows */}
                 <div className="space-y-2">
                   {[
-                    { name: "Sarah Chen", co: "Fintech Agency", score: "HOT", value: "$12k" },
-                    { name: "Marcus Webb", co: "E-commerce Brand", score: "WARM", value: "$6k" },
-                    { name: "Priya Sharma", co: "SaaS Startup", score: "HOT", value: "$18k" },
+                    { name: "Sarah Chen", co: "Fintech Agency · outreach drafted", score: "HOT", value: "$12k" },
+                    { name: "Marcus Webb", co: "E-commerce Brand · follow-up scheduled", score: "WARM", value: "$6k" },
+                    { name: "Priya Sharma", co: "SaaS Startup · researched & scored", score: "HOT", value: "$18k" },
                   ].map((l) => (
                     <div key={l.name} className="flex items-center justify-between rounded-lg bg-slate-800/40 border border-slate-700/30 px-4 py-2.5">
                       <div className="flex items-center gap-3">
@@ -228,21 +263,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* The maths */}
+      {/* Capacity */}
       <section className="py-24">
         <div className="container max-w-4xl mx-auto text-center">
-          <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">Do the Maths</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">An employee&apos;s output. A subscription&apos;s price.</h2>
+          <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">Why Staffgent</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">More capacity. Same team.</h2>
           <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto mb-10">
-            A sales hire costs $4,000–$6,000 a month, takes three months to onboard, and carries all the
-            employment risk. Your AI employee does the qualifying, drafting and follow-up work around the
-            clock — and we build, monitor and fine-tune it for you every month.
+            Give the repetitive work to your AI employees, and give your people more time for the work
+            that needs human judgement. Add specialist capacity without adding more repetitive work to
+            your existing team.
           </p>
           <div className="grid md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto">
             {[
-              { stat: "$4k–$6k/mo", label: "Typical sales hire, plus onboarding time and employment risk", accent: "text-slate-500" },
-              { stat: "From $497/mo", label: "Your AI employee, fully managed, cancel anytime", accent: "gradient-text" },
-              { stat: "24/7", label: "Works every lead the minute it arrives", accent: "text-emerald-400" },
+              { stat: "5 roles", label: "Sales · Marketing · Branding · Operations · Finance", accent: "text-slate-300" },
+              { stat: "From $499/mo", label: "Start with one employee. Build your team as you grow", accent: "gradient-text" },
+              { stat: "Always on", label: "Your AI team keeps work moving between the meetings", accent: "text-emerald-400" },
             ].map((s) => (
               <div key={s.label} className="glass-card rounded-xl p-6 text-center">
                 <div className={`text-2xl font-bold mb-1 ${s.accent}`}>{s.stat}</div>
@@ -259,35 +294,35 @@ export default function HomePage() {
           <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">
             The Difference
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Not another AI chatbot.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Not a bundle of chatbots.</h2>
           <p className="text-lg text-slate-400 leading-relaxed mb-10">
-            Chatbots wait for prompts. <span className="text-white font-medium">GrowthAgent OS works inside your revenue flow.</span>{" "}
-            It captures leads, researches companies, scores fit, drafts next steps and asks for approval
-            before anything sensitive happens.
+            Generic AI tools wait for prompts. <span className="text-white font-medium">Staffgent employees hold a role in your business.</span>{" "}
+            They carry defined responsibilities, work to schedules, and bring important actions to you
+            for approval.
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-left">
             <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-5">
               <div className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
-                <span className="text-lg">❌</span> Generic AI chatbots
+                <span className="text-lg">❌</span> Generic AI tools
               </div>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li>• Wait for someone to type a question</li>
-                <li>• No memory of your business context</li>
-                <li>• Can&apos;t research leads or update CRM</li>
-                <li>• No approval workflow</li>
-                <li>• Generic responses, wrong tone</li>
+                <li>• Wait for someone to type a prompt</li>
+                <li>• Know nothing about your business</li>
+                <li>• One-off answers, no follow-through</li>
+                <li>• No schedules or responsibilities</li>
+                <li>• No review or approval workflow</li>
               </ul>
             </div>
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5">
               <div className="text-sm font-semibold text-emerald-400 mb-3 flex items-center gap-2">
-                <span className="text-lg">✓</span> GrowthAgent OS
+                <span className="text-lg">✓</span> Staffgent employees
               </div>
               <ul className="space-y-2 text-sm text-slate-400">
-                <li>• Works proactively on every new lead</li>
-                <li>• Trained on your ICP and business context</li>
-                <li>• Researches, scores, drafts and updates CRM</li>
-                <li>• Nothing sensitive without your approval</li>
-                <li>• Personalised to your brand voice</li>
+                <li>• Configured with an Employee Brain built around your business</li>
+                <li>• Hold defined responsibilities and schedules</li>
+                <li>• Complete real work: research, drafts, reports</li>
+                <li>• Bring important actions to you for approval</li>
+                <li>• Work alongside your existing team</li>
               </ul>
             </div>
           </div>
@@ -299,8 +334,8 @@ export default function HomePage() {
         <div className="container">
           <div className="text-center mb-16">
             <Badge className="mb-4">How It Works</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">From enquiry to opportunity in minutes</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">The full lead-to-sale workflow, handled by your AI employee — with you in control at every step.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">From hire to working employee</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">The full journey, with you in control at every step.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {workflow.map((step) => (
@@ -314,16 +349,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Benefits */}
       <section className="py-24 bg-slate-950/50">
         <div className="container">
           <div className="text-center mb-16">
-            <Badge className="mb-4">Agent Capabilities</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything your sales flow needs</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Built around the real work of qualifying and converting digital business enquiries.</p>
+            <Badge className="mb-4">What You Get</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Built to work like a team member</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Business outcomes, not another subscription to a pile of AI tools.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {features.map((f) => (
+            {benefits.map((f) => (
               <div key={f.title} className="glass-card rounded-xl p-6 hover:border-blue-500/30 transition-all group">
                 <div className="h-10 w-10 rounded-lg bg-blue-600/20 border border-blue-500/20 flex items-center justify-center mb-4 group-hover:bg-blue-600/30 transition-colors">
                   <f.icon className="h-5 w-5 text-blue-400" />
@@ -336,16 +371,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Built for digital businesses */}
+      {/* Built for small and growing businesses */}
       <section className="py-24 bg-slate-950/50">
         <div className="container">
           <div className="text-center mb-12">
             <Badge className="mb-4">Who it&apos;s for</Badge>
-            <h2 className="text-3xl font-bold mb-4">Built for digital service businesses</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">If you sell a service and receive enquiries, GrowthAgent OS was built for you.</p>
+            <h2 className="text-3xl font-bold mb-4">Built for small and growing businesses</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">If repetitive work is eating your team&apos;s week, Staffgent was built for you.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            {["Digital agencies", "SaaS founders", "Consultants", "Coaches & trainers", "Freelancers", "B2B service businesses"].map((aud) => (
+            {["Digital agencies", "SaaS & software", "Consultants & coaches", "E-commerce brands", "Trades & local services", "Professional services"].map((aud) => (
               <div key={aud} className="glass-card rounded-xl p-5 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-blue-600/20 flex items-center justify-center shrink-0">
                   <CheckCircle className="h-4 w-4 text-blue-400" />
@@ -357,29 +392,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Agent Modules */}
-      <section className="py-24">
+      {/* The Employees */}
+      <section id="employees" className="py-24">
         <div className="container">
           <div className="text-center mb-16">
-            <Badge className="mb-4">Agent Suite</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your full AI operations team</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Each agent is purpose-built for a specific step in your revenue process.</p>
+            <Badge className="mb-4 border-violet-500/30 bg-violet-500/10 text-violet-400">Meet the Employees</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Five specialists. One workforce.</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Choose from specialised AI employee roles. Start with the one your business needs most.</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {agentModules.map((m) => (
-              <div key={m.name} className="glass-card rounded-xl p-4 hover:border-violet-500/30 transition-all">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="h-8 w-8 rounded-lg bg-violet-600/20 flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-violet-400" />
-                  </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    m.badge === "All plans" ? "bg-emerald-500/20 text-emerald-400" :
-                    m.badge === "Sales Team" ? "bg-blue-500/20 text-blue-400" :
-                    "bg-violet-500/20 text-violet-400"
-                  }`}>{m.badge}</span>
+          <div className="flex flex-wrap justify-center gap-5 max-w-5xl mx-auto">
+            {employees.map((m) => (
+              <div key={m.name} className="glass-card rounded-xl p-6 hover:border-violet-500/30 transition-all w-full md:w-[320px] flex flex-col">
+                <div className="h-9 w-9 rounded-lg bg-violet-600/20 border border-violet-500/20 flex items-center justify-center mb-4">
+                  <Bot className="h-4 w-4 text-violet-400" />
                 </div>
-                <h3 className="text-sm font-semibold mb-1">{m.name}</h3>
-                <p className="text-xs text-slate-400">{m.desc}</p>
+                <h3 className="text-base font-semibold mb-1">{m.name}</h3>
+                <p className="text-sm font-medium text-blue-400 mb-2">{m.outcome}</p>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4 flex-1">{m.desc}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {m.caps.map((c) => (
+                    <span key={c} className="text-xs px-2 py-0.5 rounded-full bg-slate-800/70 border border-slate-700/50 text-slate-400">{c}</span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -393,18 +427,18 @@ export default function HomePage() {
             <div className="h-14 w-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
               <Shield className="h-7 w-7 text-emerald-400" />
             </div>
-            <Badge className="mb-4 border-emerald-500/30 bg-emerald-500/10 text-emerald-400">Approval-First AI</Badge>
-            <h2 className="text-3xl font-bold mb-4">You stay in control. Always.</h2>
+            <Badge className="mb-4 border-emerald-500/30 bg-emerald-500/10 text-emerald-400">You Stay in Control</Badge>
+            <h2 className="text-3xl font-bold mb-4">AI employees that work independently — with you in control of the decisions that matter.</h2>
             <p className="text-slate-400 leading-relaxed max-w-2xl mx-auto mb-8">
-              Every sensitive action goes through your approval queue before anything happens. Draft emails,
-              CRM updates, follow-up sequences, proposal outlines — all reviewed by you. GrowthAgent OS
-              does the preparation; you make the decisions.
+              Your employees research, prepare, analyse, draft, organise and report. Important external
+              actions come back to you for review before anything happens. Staffgent does the
+              preparation; you make the decisions.
             </p>
             <div className="grid md:grid-cols-3 gap-4 text-left">
               {[
-                { icon: FileText, title: "Draft Email Approval", desc: "Review and approve every draft before it can be sent." },
-                { icon: Lock, title: "CRM Update Control", desc: "Approve or reject CRM status changes and data updates." },
-                { icon: CheckCircle, title: "Full Audit Trail", desc: "Every agent action logged for complete transparency." },
+                { icon: FileText, title: "Review & Approval Queue", desc: "Important work waits for your sign-off before it goes anywhere." },
+                { icon: Lock, title: "Defined Instructions", desc: "Every employee works to the rules, tone and boundaries you set." },
+                { icon: CheckCircle, title: "Full Work Log", desc: "Every piece of work recorded, so you can always see what your team did." },
               ].map((item) => (
                 <div key={item.title} className="rounded-lg bg-slate-800/40 border border-slate-700/30 p-4">
                   <item.icon className="h-5 w-5 text-emerald-400 mb-2" />
@@ -421,13 +455,13 @@ export default function HomePage() {
       <section className="py-24">
         <div className="container max-w-4xl mx-auto text-center">
           <Badge className="mb-6">Simple Pricing</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Hire your first AI employee</h2>
-          <p className="text-slate-400 mb-10">A fraction of the cost of a sales hire. We build it, you approve the work.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Hire employees, not software seats</h2>
+          <p className="text-slate-400 mb-10">Start with the employee your business needs most, and build your team from there.</p>
           <div className="grid md:grid-cols-3 gap-6 mb-6">
             {[
-              { name: "AI Sales Assistant", setup: "$997", monthly: "$497", allowance: "200 leads/mo included", desc: "1 AI employee: research, scoring, reply drafting", highlight: false },
-              { name: "AI Sales Team", setup: "$1,997", monthly: "$997", allowance: "500 leads/mo included", desc: "3 AI employees: adds follow-ups + call-prep briefs", highlight: true },
-              { name: "Full AI Revenue OS", setup: "$2,997", monthly: "$1,997", allowance: "1,500 leads/mo included", desc: "Full agent suite: adds proposals + competitor monitoring", highlight: false },
+              { name: "Solo", setup: "$997", monthly: "$499", allowance: "1 AI Employee · 500 work credits/mo", desc: "Start with the employee your business needs most.", highlight: false },
+              { name: "Team", setup: "$1,997", monthly: "$1,199", allowance: "3 AI Employees · 1,500 work credits/mo", desc: "Build a connected AI team across the areas that matter most.", highlight: true },
+              { name: "Workforce", setup: "$2,997", monthly: "$1,799", allowance: "All 5 AI Employees · 5,000 work credits/mo", desc: "Build a complete AI workforce around your business.", highlight: false },
             ].map((p) => (
               <div key={p.name} className={`rounded-xl p-6 border transition-all ${p.highlight ? "border-blue-500/50 bg-blue-600/10 glow-blue" : "border-slate-700/50 bg-slate-900/60"}`}>
                 {p.highlight && <Badge className="mb-3 border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs">Most Popular</Badge>}
@@ -442,11 +476,11 @@ export default function HomePage() {
             ))}
           </div>
           <p className="text-sm text-slate-500 max-w-2xl mx-auto mb-2">
-            One lead = researched, scored, replied and followed up — one number, no hidden meters.
-            Need more? +100 leads for $49, prepaid, never auto-billed.
+            Work credits cover everything your employees do — research, drafts, reports, follow-ups.
+            Need more? +250 credits for $49, prepaid, never auto-billed.
           </p>
           <p className="text-xs text-slate-500 mb-8">
-            Month-to-month · Cancel anytime · Pay annually, get 2 months free · 30-Day Setup Guarantee
+            Month-to-month · Cancel anytime · Every employee starts with a structured business kickoff
           </p>
           <Button variant="gradient" asChild>
             <Link href="/pricing">View Full Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link>
@@ -458,7 +492,7 @@ export default function HomePage() {
       <section id="getting-started" className="py-24">
         <div className="container max-w-3xl mx-auto">
           <div className="text-center mb-14">
-            <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">From signup to live in 5–7 days</Badge>
+            <Badge className="mb-6 border-violet-500/30 bg-violet-500/10 text-violet-400">From hire to first day in 5–7 days</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Exactly what happens when you sign up</h2>
             <p className="text-lg text-slate-400 leading-relaxed">
               No prompts to write, no software to learn. Your total time investment is about an hour —
@@ -496,7 +530,7 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-sm text-slate-500 mb-5">After go-live: we monitor your employee, tune it monthly, and you approve its work from your phone, email or CRM.</p>
+            <p className="text-sm text-slate-500 mb-5">After day one: your employee works to schedule, and important actions wait in your review queue.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="gradient" size="lg" asChild className="h-12 px-8">
                 <Link href="/demo">Start Step 1 — Try the Demo <ArrowRight className="ml-2 h-4 w-4" /></Link>
@@ -535,13 +569,14 @@ export default function HomePage() {
           <Badge className="mb-6 border-blue-500/30 bg-blue-500/10 text-blue-400">
             <Zap className="h-3.5 w-3.5 mr-1.5" /> Get started today
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to hire your first AI employee?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Your next employee could be AI.</h2>
           <p className="text-lg text-slate-400 mb-8">
-            We build it around your business, monitor it every month, and send all its work to your private CRM for approval. You stay in control — it does the graft.
+            Start with the role your business needs most and build your Staffgent workforce from there.
+            You stay in control — your AI team does the repetitive work.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="gradient" size="lg" asChild className="h-12 px-8">
-              <Link href="/signup">Hire Your AI Employee <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/signup">Build Your AI Team <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             <Button variant="outline" size="lg" asChild className="h-12 px-8">
               <Link href="/demo">Try the Live Demo</Link>

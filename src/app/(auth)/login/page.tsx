@@ -41,7 +41,7 @@ export default function LoginPage() {
           <Bot className="h-6 w-6 text-white" />
         </div>
         <h1 className="text-2xl font-bold">Welcome back</h1>
-        <p className="text-sm text-slate-400 mt-1">Sign in to your GrowthAgent OS dashboard</p>
+        <p className="text-sm text-slate-400 mt-1">Sign in to your Staffgent workspace</p>
       </div>
 
       {error && (

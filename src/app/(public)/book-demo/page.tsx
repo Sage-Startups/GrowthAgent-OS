@@ -32,7 +32,7 @@ export default function BookDemoPage() {
           </div>
           <h1 className="text-3xl font-bold mb-3">Request received!</h1>
           <p className="text-slate-400 mb-8">
-            Thanks for your interest in GrowthAgent OS. We will review your information and reach out within 1 business day to schedule your personalised walkthrough.
+            Thanks for your interest in Staffgent. We will review your information and reach out within 1 business day to schedule your personalised walkthrough.
           </p>
           <Button variant="outline" asChild>
             <Link href="/demo">Explore the live demo while you wait <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
@@ -49,9 +49,10 @@ export default function BookDemoPage() {
           <Badge className="mb-4 border-blue-500/30 bg-blue-500/10 text-blue-400">
             <Calendar className="h-3.5 w-3.5 mr-1.5" /> Book a Walkthrough
           </Badge>
-          <h1 className="text-4xl font-bold mb-3">See your AI employee before you hire it</h1>
+          <h1 className="text-4xl font-bold mb-3">Meet your AI employees before you hire them</h1>
           <p className="text-slate-400">
-            Tell us about your business and we will show you exactly how your AI employee would handle your lead flow.
+            Tell us about your business and we will show you which Staffgent employee role would take
+            the most repetitive work off your team&apos;s plate.
           </p>
           <p className="text-sm text-slate-500 mt-3">
             Prefer to look around first?{" "}

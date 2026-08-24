@@ -51,7 +51,7 @@ export default function DemoApprovalsPage() {
             </p>
             <div className="flex items-center justify-center gap-3">
               <Button variant="gradient" asChild>
-                <Link href="/signup">Hire Your AI Employee <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+                <Link href="/signup">Build Your AI Team <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/demo/chat">Chat with {demoCompany.employeeName} <Bot className="ml-1.5 h-4 w-4" /></Link>
