@@ -36,7 +36,7 @@ export function DemoSidebar() {
             <BotIcon className="h-4 w-4 text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold leading-tight">GrowthAgent OS</div>
+            <div className="text-sm font-bold leading-tight">Staffgent</div>
             <div className="text-[10px] text-blue-400">Demo workspace</div>
           </div>
         </div>
@@ -85,7 +85,7 @@ export function DemoSidebar() {
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-xs font-semibold truncate">Maya Thompson</div>
-            <div className="text-[10px] text-slate-500 truncate">Sales Team plan · Demo</div>
+            <div className="text-[10px] text-slate-500 truncate">Team plan · Demo</div>
           </div>
         </div>
       </div>

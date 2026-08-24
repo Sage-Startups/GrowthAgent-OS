@@ -26,12 +26,12 @@ export function Navbar() {
             <Bot className="h-4.5 w-4.5 text-white" />
           </div>
           <span className="text-lg font-bold tracking-tight">
-            Growth<span className="gradient-text">Agent OS</span>
+            Staff<span className="gradient-text">gent</span>
           </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link href="/#features" className="text-slate-400 hover:text-white transition-colors">Features</Link>
+          <Link href="/#employees" className="text-slate-400 hover:text-white transition-colors">Employees</Link>
           <Link href="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
           <Link href="/demo" className="text-slate-400 hover:text-white transition-colors">Live Demo</Link>
         </nav>

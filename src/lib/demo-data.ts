@@ -5,7 +5,7 @@
 export const demoCompany = {
   name: "Bright Digital Agency",
   owner: "Maya Thompson",
-  plan: "AI Sales Team",
+  plan: "Team",
   employeeName: "Ava",
 }
 
@@ -21,7 +21,7 @@ export const demoStats = {
 }
 
 export const demoCredits = {
-  plan: "AI Sales Team",
+  plan: "Team",
   limit: 1500,
   used: 640,
   remaining: 860,

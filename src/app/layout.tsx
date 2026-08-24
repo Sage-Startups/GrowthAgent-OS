@@ -7,12 +7,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
   title: {
-    default: "GrowthAgent OS — AI Agents for Sales Growth",
-    template: "%s | GrowthAgent OS",
+    default: "Staffgent | Hire Your AI Workforce",
+    template: "%s | Staffgent",
   },
   description:
-    "Hire a fully managed AI employee that researches, scores and replies to every lead — from $497/month with a monthly lead allowance. You approve the work; it does the graft.",
-  keywords: ["AI agents", "sales automation", "lead management", "CRM", "SaaS"],
+    "Build a specialised AI workforce for your business. Hire AI employees for sales, marketing, branding, operations and finance — configured around the way your business works.",
+  keywords: ["AI workforce", "AI employees", "AI team", "business AI", "sales", "marketing", "operations"],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

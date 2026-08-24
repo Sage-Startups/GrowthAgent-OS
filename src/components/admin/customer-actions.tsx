@@ -14,7 +14,7 @@ import {
 import { Pause, Play, Coins, StickyNote } from "lucide-react"
 
 const SETUP_STATUSES = ["NEW", "ONBOARDING", "CONFIGURING", "TESTING", "LIVE", "PAUSED"]
-const PLAN_OPTIONS = ["AI Sales Assistant", "AI Sales Team", "Full AI Revenue OS"]
+const PLAN_OPTIONS = ["Solo", "Team", "Workforce"]
 
 type ActionResult = { success?: boolean; error?: string } | undefined
 
